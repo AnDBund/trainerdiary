@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизація та Профіль</title>
+    <style>
+        :root {
+            --primary: #4285f4;
+            --primary-hover: #357ae8;
+            --bg: #f4f7f9;
+            --text: #333;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .hidden { display: none !important; }
+
+        h2 { margin-bottom: 1.5rem; }
+
+        .btn {
+            cursor: pointer;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-google {
+            background-color: var(--white);
+            border: 1px solid #ddd;
+            color: #757575;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-google:hover { background-color: #f1f1f1; }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover { background-color: var(--primary-hover); }
+
+        .btn-logout {
+            background-color: #ff4b2b;
+            color: white;
+            margin-top: 2rem;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .profile-info {
+            text-align: left;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Стан завантаження -->
+        <div id="loader" class="hidden">
+            <div class="loader"></div>
+            <p>Завантаження...</p>
+        </div>
+
+        <!-- Екран логіну -->
+        <div id="auth-screen">
+            <h2>Вітаємо!</h2>
+            <p>Будь ласка, увійдіть для продовження</p>
+            <button class="btn btn-google" id="login-btn">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" alt="G">
+                Увійти через Google
+            </button>
+        </div>
+
+        <!-- Форма реєстрації профілю -->
+        <div id="profile-form-screen" class="hidden">
+            <h2>Заповніть профіль</h2>
+            <div class="form-group">
+                <label>Ваша роль</label>
+                <select id="role">
+                    <option value="student">Студент</option>
+                    <option value="teacher">Викладач</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Спеціалізація (вид спорту)</label>
+                <input type="text" id="specialization" placeholder="напр. Плавання">
+            </div>
+            <div class="form-group">
+                <label>Спортивний розряд/звання</label>
+                <input type="text" id="rank" placeholder="напр. МСУ, КМС, 1 розряд">
+            </div>
+            <div id="group-field" class="form-group">
+                <label>Шифр групи</label>
+                <input type="text" id="group_id" placeholder="напр. ФК-21">
+            </div>
+            <button class="btn btn-primary" id="save-profile-btn">Зберегти профіль</button>
+        </div>
+
+        <!-- Екран кабінету -->
+        <div id="dashboard-screen" class="hidden">
+            <h2>Мій Профіль</h2>
+            <div id="user-data" class="profile-info">
+                <!-- Дані вставляються через JS -->
+            </div>
+            <button class="btn btn-logout" id="logout-btn">Вийти</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase SDK v10 CDN
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+        // Твій об'єкт конфігурації Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDbrnCtj-D-KG_yxcNn5t_NcnokGzDMtzE",
+            authDomain: "trainerdiary-4245e.firebaseapp.com",
+            projectId: "trainerdiary-4245e",
+            storageBucket: "trainerdiary-4245e.firebasestorage.app",
+            messagingSenderId: "939887849237",
+            appId: "1:939887849237:web:630cee43cb1708188bc31c"
+        };
+
+        // Ініціалізація
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        // Елементи DOM
+        const authScreen = document.getElementById('auth-screen');
+        const profileFormScreen = document.getElementById('profile-form-screen');
+        const dashboardScreen = document.getElementById('dashboard-screen');
+        const loader = document.getElementById('loader');
+        const userDataDiv = document.getElementById('user-data');
+        const roleSelect = document.getElementById('role');
+        const groupField = document.getElementById('group-field');
+
+        // Перемикач видимості групи залежно від ролі
+        roleSelect.addEventListener('change', () => {
+            groupField.classList.toggle('hidden', roleSelect.value !== 'student');
+        });
+
+        // Спостерігач за станом авторизації
+        onAuthStateChanged(auth, async (user) => {
+            showLoader(true);
+            if (user) {
+                await checkUserProfile(user);
+            } else {
+                showScreen(authScreen);
+            }
+            showLoader(false);
+        });
+
+        // Функція перевірки наявності профілю в Firestore
+        async function checkUserProfile(user) {
+            const docRef = doc(db, "Users", user.uid);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                // Користувач існує - показуємо дашборд
+                renderDashboard(docSnap.data());
+                showScreen(dashboardScreen);
+            } else {
+                // Користувач новий - показуємо форму
+                showScreen(profileFormScreen);
+            }
+        }
+
+        // Вхід через Google
+        document.getElementById('login-btn').onclick = async () => {
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error("Помилка входу:", error);
+                alert("Не вдалося увійти через Google.");
+            }
+        };
+
+        // Збереження профілю
+        document.getElementById('save-profile-btn').onclick = async () => {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const role = roleSelect.value;
+            const spec = document.getElementById('specialization').value.trim();
+            const rank = document.getElementById('rank').value.trim();
+            const groupId = role === 'student' ? document.getElementById('group_id').value.trim() : "N/A";
+
+            if (!spec || !rank || (role === 'student' && !groupId)) {
+                alert("Будь ласка, заповніть усі обов'язкові поля.");
+                return;
+            }
+
+            showLoader(true);
+            const profileData = {
+                user_id: user.uid,
+                full_name: user.displayName,
+                email: user.email,
+                auth_provider: "google.com",
+                group_id: groupId,
+                role: role,
+                sport_specialization: spec,
+                sport_rank: rank,
+                total_xp: 0,
+                created_at: serverTimestamp()
+            };
+
+            try {
+                await setDoc(doc(db, "Users", user.uid), profileData);
+                renderDashboard(profileData);
+                showScreen(dashboardScreen);
+            } catch (error) {
+                console.error("Помилка запису:", error);
+                alert("Сталася помилка при збереженні.");
+            } finally {
+                showLoader(false);
+            }
+        };
+
+        // Вихід
+        document.getElementById('logout-btn').onclick = () => signOut(auth);
+
+        // Допоміжні функції інтерфейсу
+        function showScreen(screen) {
+            [authScreen, profileFormScreen, dashboardScreen].forEach(s => s.classList.add('hidden'));
+            screen.classList.remove('hidden');
+        }
+
+        function showLoader(isVisible) {
+            isVisible ? loader.classList.remove('hidden') : loader.classList.add('hidden');
+        }
+
+        function renderDashboard(data) {
+            userDataDiv.innerHTML = `
+                <p><strong>Ім'я:</strong> ${data.full_name}</p>
+                <p><strong>Роль:</strong> ${data.role === 'student' ? 'Студент' : 'Викладач'}</p>
+                <p><strong>Спеціалізація:</strong> ${data.sport_specialization}</p>
+                <p><strong>Розряд:</strong> ${data.sport_rank}</p>
+                ${data.role === 'student' ? `<p><strong>Група:</strong> ${data.group_id}</p>` : ''}
+                <p><strong>Бали (XP):</strong> ${data.total_xp}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
