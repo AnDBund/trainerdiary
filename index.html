@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trainer Diary - Student & Teacher System</title>
+    <title>Trainer Diary - Physical Education System</title>
     <style>
         :root { --primary: #4285f4; --accent: #34a853; --bg: #f0f2f5; --white: #ffffff; --warn: #fbbc05; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; }
@@ -11,27 +11,21 @@
         .p-4 { padding: 20px; }
         .hidden { display: none !important; }
         
-        /* Buttons */
         .btn { padding: 14px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; margin-top: 10px; width: 100%; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-accent { background: var(--accent); color: white; }
-        .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
 
-        /* Header */
         .header { background: var(--primary); color: white; padding: 20px; border-radius: 0 0 20px 20px; }
         .xp-badge { background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; display: inline-block; margin-top: 8px; font-weight: bold; }
 
-        /* Tabs */
         .tabs { display: flex; background: #f8f9fa; border-bottom: 1px solid #ddd; }
         .tab-btn { flex: 1; padding: 15px; border: none; background: none; cursor: pointer; font-weight: 600; color: #777; border-bottom: 3px solid transparent; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: white; }
 
-        /* Form Elements */
         .form-group { margin-bottom: 18px; text-align: left; }
         label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #444; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
         
-        /* Slider RPE Style */
         .rpe-container { text-align: center; padding: 10px 0; }
         .rpe-value { color: var(--primary); font-weight: bold; font-size: 14px; margin-bottom: 5px; display: block; }
         .rpe-desc { font-size: 12px; color: #888; margin-top: 5px; display: block; }
@@ -40,15 +34,15 @@
         .row { display: flex; gap: 10px; }
         .row > div { flex: 1; }
 
-        /* History & Lists */
         .history-list { margin-top: 20px; border-top: 2px solid #eee; padding-top: 15px; }
-        .history-item { background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--primary); font-size: 13px; }
+        .history-item { background: #f9f9f9; padding: 12px; border-radius: 10px; margin-bottom: 8px; border-left: 4px solid var(--primary); font-size: 13px; line-height: 1.4; }
         
-        /* Teacher UI */
-        .student-card { background: #fff; border: 1px solid #eee; padding: 12px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+        .student-card { background: #fff; border: 1px solid #eee; padding: 12px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; }
         .student-card:hover { border-color: var(--primary); background: #f0f7ff; }
-        .student-card.active { border-color: var(--primary); background: #e8f0fe; }
         .section-title { border-bottom: 2px solid var(--primary); padding-bottom: 5px; margin: 20px 0 15px 0; color: var(--primary); font-weight: bold; }
+        
+        .video-box { background: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; }
+        .video-link { color: #856404; font-weight: bold; text-decoration: none; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -64,7 +58,7 @@
         <div id="profile-form-screen" class="hidden p-4">
             <h2>Створення профілю</h2>
             <div class="form-group"><label>Роль</label><select id="reg-role"><option value="student">Студент</option><option value="teacher">Викладач</option></select></div>
-            <div class="form-group"><label>Спеціалізація</label><input type="text" id="reg-spec" placeholder="Футбол"></div>
+            <div class="form-group"><label>Спеціалізація</label><input type="text" id="reg-spec" placeholder="Легка атлетика"></div>
             <div id="reg-group-box" class="form-group"><label>Група</label><input type="text" id="reg-group" placeholder="ФК-21"></div>
             <button class="btn btn-primary" id="save-profile-btn">Почати</button>
         </div>
@@ -74,7 +68,7 @@
             <div class="header">
                 <div style="display: flex; justify-content: space-between;">
                     <h2 id="st-name" style="margin:0">Студент</h2>
-                    <button id="logout-st" style="background:none; border:none; color:white; cursor:pointer; opacity:0.8">Вийти</button>
+                    <button id="logout-st" style="background:none; border:none; color:white; cursor:pointer;">Вийти</button>
                 </div>
                 <div id="st-xp" class="xp-badge">0 XP</div>
             </div>
@@ -99,19 +93,36 @@
                     <div class="form-group"><label>Сон (1-5)</label><select id="sm-sleep"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
                 </div>
                 <div class="form-group"><label>Біль у м'язах (1-5)</label><select id="sm-muscle"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></div>
-                <div class="form-group"><label>Нотатки</label><textarea id="sm-notes" rows="2" placeholder="вв"></textarea></div>
+                <div class="form-group"><label>Нотатки</label><textarea id="sm-notes" rows="2" placeholder="Ваші відчуття"></textarea></div>
                 <button class="btn btn-primary" id="save-sm-btn">Зберегти стан (+10 XP)</button>
-                <div class="history-list"><h4>Останні записи</h4><div id="sm-history"></div></div>
+                <div class="history-list"><h4>Історія самоконтролю</h4><div id="sm-history"></div></div>
             </div>
 
             <div id="st-mt-box" class="hidden p-4">
-                <div class="form-group"><label>Тест</label><select id="mt-type"><option>Біг 30 м</option><option>Стрибок у довжину</option><option>Підтягування</option></select></div>
+                <div class="video-box">
+                    <a href="https://drive.google.com/drive/folders/13wjY8OT-6ycHIVc0pxFy1XpXmrwVhD8e?usp=sharing" target="_blank" class="video-link">
+                        📁 Завантажити відео виконаного тесту
+                    </a>
+                </div>
+                <div class="form-group"><label>Назва нормативу</label>
+                    <select id="mt-type">
+                        <option>Біг на 30 метрів з високого старту</option>
+                        <option>12-хвилинний біговий тест Купера</option>
+                        <option>Піднімання тулуба в сід за 1 хвилину</option>
+                        <option>Вертикальний стрибок (Тест Сарджента)</option>
+                        <option>Згинання та розгинання рук (Віджимання)</option>
+                        <option>Стрибок у довжину з місця</option>
+                        <option>Нахил тулуба вперед із положення сидячи</option>
+                        <option>Тест Бурпі</option>
+                        <option>Тест статокінетичної стійкості «Фламінго»</option>
+                    </select>
+                </div>
                 <div class="row">
                     <div class="form-group"><label>Результат</label><input type="number" id="mt-val" step="0.01"></div>
-                    <div class="form-group"><label>Одиниця</label><select id="mt-unit"><option>сек</option><option>м</option><option>разів</option></select></div>
+                    <div class="form-group"><label>Одиниця</label><select id="mt-unit"><option>сек</option><option>м</option><option>разів</option><option>см</option></select></div>
                 </div>
                 <button class="btn btn-primary" id="save-mt-btn" style="background:var(--accent)">Зафіксувати результат (+10 XP)</button>
-                <div class="history-list"><h4>Історія тестів</h4><div id="mt-history"></div></div>
+                <div class="history-list"><h4>Історія нормативів</h4><div id="mt-history"></div></div>
             </div>
         </div>
 
@@ -122,40 +133,30 @@
                     <h2 id="th-name" style="margin:0">Викладач</h2>
                     <button id="logout-th" style="background:none; border:none; color:white; cursor:pointer;">Вийти</button>
                 </div>
-                <div style="font-size: 12px; margin-top: 5px;">Панель моніторингу груп</div>
             </div>
 
             <div class="p-4">
-                <div class="form-group"><label>Оберіть групу</label><select id="th-group-filter"></select></div>
+                <div class="form-group"><label>Група</label><select id="th-group-filter"></select></div>
                 <div id="student-list"></div>
 
-                <!-- Деталі обраного студента -->
                 <div id="th-details" class="hidden" style="margin-top: 20px;">
                     <div class="section-title" id="th-student-title">Студент</div>
-                    
                     <div class="tabs">
                         <button class="tab-btn active" id="th-btn-stat">Моніторинг</button>
                         <button class="tab-btn" id="th-btn-action">Дії</button>
                     </div>
 
                     <div id="th-stat-box" class="p-4">
-                        <h4>Самоконтроль</h4><div id="th-sm-history"></div>
+                        <h4>Самоконтроль (Розширені дані)</h4><div id="th-sm-history"></div>
                         <h4>Рухові тести</h4><div id="th-mt-history"></div>
                     </div>
 
                     <div id="th-action-box" class="p-4 hidden">
                         <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
-                            <label>Виставити бал</label>
-                            <input type="number" id="th-grade-val" placeholder="Оцінка">
-                            <select id="th-grade-type" style="margin-top:5px"><option>Поточна</option><option>Модульна</option></select>
+                            <label>Бал</label><input type="number" id="th-grade-val">
                             <button class="btn btn-primary" id="th-save-grade">Зберегти оцінку</button>
                         </div>
-                        <div style="background: #e1f5fe; padding: 15px; border-radius: 8px;">
-                            <label>Присвоїти значок (+50 XP)</label>
-                            <select id="th-badge-id"><option>Тренер</option><option>Фахівець IoT</option><option>Експерт AI</option></select>
-                            <textarea id="th-badge-comment" style="margin-top:5px" placeholder="Коментар"></textarea>
-                            <button class="btn btn-accent" id="th-award-badge">Вручити нагороду</button>
-                        </div>
+                        <button class="btn btn-accent" id="th-award-badge">Вручити нагороду (+50 XP)</button>
                     </div>
                 </div>
             </div>
@@ -185,47 +186,41 @@
         const rpeTexts = ["-", "Дуже легко", "Легко", "Помірно", "Досить легко", "Важко", "Важче", "Дуже важко", "Дуже-дуже важко", "Майже макс", "Максимум"];
         let selStudentId = null;
 
-        // UI Handlers
         document.getElementById('sm-rpe').oninput = function() {
             document.getElementById('rpe-num').innerText = this.value;
             document.getElementById('rpe-text').innerText = rpeTexts[this.value];
         };
         document.getElementById('sm-date').valueAsDate = new Date();
 
-        // Routing
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 const userDoc = await getDoc(doc(db, "Users", user.uid));
                 if (userDoc.exists()) {
-                    const data = userDoc.data();
-                    if (data.role === 'teacher') {
-                        showScreen('teacher-dashboard');
-                        initTeacher(data);
-                    } else {
-                        showScreen('student-dashboard');
-                        initStudent(user, data);
-                    }
+                    const d = userDoc.data();
+                    d.role === 'teacher' ? (showScreen('teacher-dashboard'), initTeacher(d)) : (showScreen('student-dashboard'), initStudent(user, d));
                 } else { showScreen('profile-form-screen'); }
             } else { showScreen('auth-screen'); }
         });
 
-        // --- Student Dashboard ---
         function initStudent(user, data) {
             document.getElementById('st-name').innerText = data.full_name;
             onSnapshot(doc(db, "Users", user.uid), (snap) => {
                 if (snap.exists()) document.getElementById('st-xp').innerText = (snap.data().total_xp || 0) + " XP";
             });
-            // History
             loadHistory(user.uid, 'sm-history', 'Self_Monitoring');
             loadHistory(user.uid, 'mt-history', 'Motor_Tests');
         }
 
         async function loadHistory(uid, containerId, collName) {
-            const q = query(collection(db, collName), where("user_id", "==", uid), orderBy("created_at", "desc"), limit(5));
+            const q = query(collection(db, collName), where("user_id", "==", uid), orderBy("created_at", "desc"), limit(10));
             onSnapshot(q, (snap) => {
                 document.getElementById(containerId).innerHTML = snap.docs.map(d => {
                     const dt = d.data();
-                    return `<div class="history-item"><b>${dt.entry_date || dt.test_type}</b>: ${dt.rpe_score || dt.test_value} ${dt.measurement_unit || ''}</div>`;
+                    if(collName === 'Self_Monitoring') {
+                        return `<div class="history-item">📅 <b>${dt.entry_date}</b><br>RPE: ${dt.rpe_score} | Втома: ${dt.fatigue_level}/5 | Сон: ${dt.sleep_quality}/5 | Біль: ${dt.muscle_soreness}/5</div>`;
+                    } else {
+                        return `<div class="history-item">🏆 <b>${dt.test_type}</b><br>Результат: ${dt.test_value} ${dt.measurement_unit}</div>`;
+                    }
                 }).join('');
             });
         }
@@ -233,9 +228,8 @@
         document.getElementById('save-sm-btn').onclick = async () => {
             const user = auth.currentUser;
             const dateStr = document.getElementById('sm-date').value;
-            const q = query(collection(db, "Self_Monitoring"), where("user_id", "==", user.uid), where("entry_date", "==", dateStr));
-            const snap = await getDocs(q);
-            if (!snap.empty) return alert("Сьогодні дані вже внесено!");
+            const snap = await getDocs(query(collection(db, "Self_Monitoring"), where("user_id", "==", user.uid), where("entry_date", "==", dateStr)));
+            if (!snap.empty) return alert("Дані за цю дату вже внесено!");
 
             await addDoc(collection(db, "Self_Monitoring"), {
                 user_id: user.uid, entry_date: dateStr,
@@ -247,42 +241,41 @@
                 created_at: serverTimestamp()
             });
             await setDoc(doc(db, "Users", user.uid), { total_xp: increment(10) }, { merge: true });
-            alert("Збережено! +10 XP");
+            alert("Дані самоконтролю збережено! +10 XP");
         };
 
         document.getElementById('save-mt-btn').onclick = async () => {
             const user = auth.currentUser;
+            const type = document.getElementById('mt-type').value;
             await addDoc(collection(db, "Motor_Tests"), {
-                user_id: user.uid, test_type: document.getElementById('mt-type').value,
+                user_id: user.uid, test_type: type,
                 test_value: parseFloat(document.getElementById('mt-val').value),
                 measurement_unit: document.getElementById('mt-unit').value,
                 created_at: serverTimestamp(), entry_date: new Date().toISOString().split('T')[0]
             });
             await setDoc(doc(db, "Users", user.uid), { total_xp: increment(10) }, { merge: true });
-            alert("Тест зафіксовано! +10 XP");
+            alert("Норматив зафіксовано! +10 XP");
         };
 
-        // --- Teacher Dashboard ---
         async function initTeacher(data) {
             document.getElementById('th-name').innerText = data.full_name;
             const snap = await getDocs(query(collection(db, "Users"), where("role", "==", "student")));
             const students = snap.docs.map(d => ({id: d.id, ...d.data()}));
-            
             const groups = [...new Set(students.map(s => s.group_id))];
             const filter = document.getElementById('th-group-filter');
-            filter.innerHTML = '<option value="">Оберіть групу</option>' + groups.map(g => `<option value="${g}">${g}</option>`).join('');
+            filter.innerHTML = '<option value="">Група</option>' + groups.map(g => `<option value="${g}">${g}</option>`).join('');
             
             filter.onchange = () => {
                 const filtered = students.filter(s => s.group_id === filter.value);
                 document.getElementById('student-list').innerHTML = filtered.map(s => `
                     <div class="student-card" onclick="openStudent('${s.id}', '${s.full_name}')">
-                        <b>${s.full_name}</b><br><small>${s.sport_specialization} | ${s.total_xp} XP</small>
+                        <b>${s.full_name}</b><br><small>${s.total_xp} XP | ${s.sport_specialization}</small>
                     </div>
                 `).join('');
             };
         }
 
-        window.openStudent = async (id, name) => {
+        window.openStudent = (id, name) => {
             selStudentId = id;
             document.getElementById('th-details').classList.remove('hidden');
             document.getElementById('th-student-title').innerText = name;
@@ -292,71 +285,30 @@
 
         document.getElementById('th-save-grade').onclick = async () => {
             if(!selStudentId) return;
-            await addDoc(collection(db, "Grades"), {
-                user_id: selStudentId, teacher_id: auth.currentUser.uid,
-                grade_value: parseInt(document.getElementById('th-grade-val').value),
-                control_type: document.getElementById('th-grade-type').value,
-                graded_at: serverTimestamp()
-            });
-            alert("Оцінку виставлено!");
+            await addDoc(collection(db, "Grades"), { user_id: selStudentId, teacher_id: auth.currentUser.uid, grade_value: parseInt(document.getElementById('th-grade-val').value), graded_at: serverTimestamp() });
+            alert("Оцінку збережено!");
         };
 
         document.getElementById('th-award-badge').onclick = async () => {
             if(!selStudentId) return;
-            await addDoc(collection(db, "User_Badges"), {
-                user_id: selStudentId, badge_id: document.getElementById('th-badge-id').value,
-                awarded_by: auth.currentUser.uid, awarded_at: serverTimestamp()
-            });
             await setDoc(doc(db, "Users", selStudentId), { total_xp: increment(50) }, { merge: true });
-            alert("Нагороджено! +50 XP");
+            alert("Вручено нагороду! +50 XP студенту");
         };
 
-        // Helpers
-        function showScreen(id) {
-            document.querySelectorAll('.container > div').forEach(s => s.classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
-        }
+        function showScreen(id) { document.querySelectorAll('.container > div').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
         document.getElementById('login-btn').onclick = () => signInWithPopup(auth, provider);
         document.getElementById('logout-st').onclick = () => signOut(auth);
         document.getElementById('logout-th').onclick = () => signOut(auth);
         
-        // Student Tab Switching
-        document.getElementById('btn-st-sm').onclick = () => {
-            document.getElementById('st-sm-box').classList.remove('hidden');
-            document.getElementById('st-mt-box').classList.add('hidden');
-            document.getElementById('btn-st-sm').classList.add('active');
-            document.getElementById('btn-st-mt').classList.remove('active');
-        };
-        document.getElementById('btn-st-mt').onclick = () => {
-            document.getElementById('st-sm-box').classList.add('hidden');
-            document.getElementById('st-mt-box').classList.remove('hidden');
-            document.getElementById('btn-st-sm').classList.remove('active');
-            document.getElementById('btn-st-mt').classList.add('active');
-        };
-
-        // Teacher Tab Switching
-        document.getElementById('th-btn-stat').onclick = () => {
-            document.getElementById('th-stat-box').classList.remove('hidden');
-            document.getElementById('th-action-box').classList.add('hidden');
-            document.getElementById('th-btn-stat').classList.add('active');
-            document.getElementById('th-btn-action').classList.remove('active');
-        };
-        document.getElementById('th-btn-action').onclick = () => {
-            document.getElementById('th-stat-box').classList.add('hidden');
-            document.getElementById('th-action-box').classList.remove('hidden');
-            document.getElementById('th-btn-stat').classList.remove('active');
-            document.getElementById('th-btn-action').classList.add('active');
-        };
+        document.getElementById('btn-st-sm').onclick = () => { document.getElementById('st-sm-box').classList.remove('hidden'); document.getElementById('st-mt-box').classList.add('hidden'); document.getElementById('btn-st-sm').classList.add('active'); document.getElementById('btn-st-mt').classList.remove('active'); };
+        document.getElementById('btn-st-mt').onclick = () => { document.getElementById('st-sm-box').classList.add('hidden'); document.getElementById('st-mt-box').classList.remove('hidden'); document.getElementById('btn-st-sm').classList.remove('active'); document.getElementById('btn-st-mt').classList.add('active'); };
+        document.getElementById('th-btn-stat').onclick = () => { document.getElementById('th-stat-box').classList.remove('hidden'); document.getElementById('th-action-box').classList.add('hidden'); document.getElementById('th-btn-stat').classList.add('active'); document.getElementById('th-btn-action').classList.remove('active'); };
+        document.getElementById('th-btn-action').onclick = () => { document.getElementById('th-stat-box').classList.add('hidden'); document.getElementById('th-action-box').classList.remove('hidden'); document.getElementById('th-btn-stat').classList.remove('active'); document.getElementById('th-btn-action').classList.add('active'); };
 
         document.getElementById('save-profile-btn').onclick = async () => {
-            const user = auth.currentUser;
-            const role = document.getElementById('reg-role').value;
-            await setDoc(doc(db, "Users", user.uid), {
-                user_id: user.uid, full_name: user.displayName, email: user.email,
-                role: role, sport_specialization: document.getElementById('reg-spec').value,
-                group_id: role === 'student' ? document.getElementById('reg-group').value : "Викладачі",
-                total_xp: 0, created_at: serverTimestamp()
-            });
+            const u = auth.currentUser;
+            const r = document.getElementById('reg-role').value;
+            await setDoc(doc(db, "Users", u.uid), { user_id: u.uid, full_name: u.displayName, email: u.email, role: r, sport_specialization: document.getElementById('reg-spec').value, group_id: r === 'student' ? document.getElementById('reg-group').value : "Teacher", total_xp: 0, created_at: serverTimestamp() });
         };
     </script>
 </body>
