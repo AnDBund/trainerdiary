@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trainer Diary - Professional Academic System</title>
+    <title>Trainer Diary - Academic System v5.0</title>
     <style>
         :root {
             --primary: #4285f4;
@@ -20,37 +20,39 @@
         .hidden { display: none !important; }
         .p-4 { padding: 20px; }
 
-        /* Header & Navigation */
+        /* Header & Header Components */
         .header { background: var(--primary); color: white; padding: 20px; border-radius: 0 0 20px 20px; position: sticky; top: 0; z-index: 100; }
         .xp-badge { background: rgba(255,255,255,0.2); padding: 6px 15px; border-radius: 20px; font-weight: bold; margin-top: 8px; display: inline-block; }
-        .tabs { display: flex; background: #f8f9fa; border-bottom: 1px solid #ddd; overflow-x: auto; }
+        .tabs { display: flex; background: #f8f9fa; border-bottom: 1px solid #ddd; overflow-x: auto; position: sticky; top: 100px; z-index: 90; }
         .tab-btn { flex: 1; min-width: 120px; padding: 15px; border: none; background: none; cursor: pointer; font-weight: bold; color: #666; border-bottom: 3px solid transparent; transition: 0.3s; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: white; }
 
-        /* Forms & Inputs */
+        /* Forms & Cards */
+        .card { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
-        .row { display: flex; gap: 10px; }
-        .row > div { flex: 1; }
+        
+        /* Buttons */
+        .btn { padding: 14px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.2s; display: block; width: 100%; text-align: center; text-decoration: none; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-accent { background: var(--accent); color: white; }
+        .btn-logout { background: none; border: 1px solid white; color: white; padding: 5px 10px; font-size: 12px; width: auto; border-radius: 5px; cursor: pointer; }
 
-        /* Cards & History */
-        .card { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .history-card { font-size: 13px; border-left: 4px solid var(--primary); padding-left: 10px; margin-bottom: 10px; background: #f9f9f9; padding: 10px; border-radius: 0 8px 8px 0; }
-        .btn { padding: 14px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.2s; }
-        .btn-primary { background: var(--primary); color: white; width: 100%; }
-        .btn-accent { background: var(--accent); color: white; width: 100%; }
-
-        /* Leaderboard */
+        /* Gamification & Leaderboard */
         .leader-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .leader-table th { background: #eee; padding: 12px; text-align: left; }
         .leader-table td { padding: 12px; border-bottom: 1px solid #f0f0f0; }
         .me { background: #e3f2fd !important; font-weight: bold; border-left: 4px solid var(--primary); }
 
-        /* Badges */
         .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin-top: 20px; }
         .badge-card { background: #f9f9f9; border: 2px solid #eee; border-radius: 15px; padding: 10px; text-align: center; opacity: 0.3; filter: grayscale(1); transition: 0.4s; }
         .badge-card.earned { opacity: 1; filter: grayscale(0); border-color: var(--warn); background: #fffde7; }
+        .badge-icon { font-size: 30px; display: block; margin-bottom: 5px; }
+
+        .history-card { font-size: 13px; border-left: 4px solid var(--primary); padding-left: 10px; margin-bottom: 10px; background: #f9f9f9; padding: 10px; border-radius: 0 8px 8px 0; }
+        .row { display: flex; gap: 10px; }
+        .row > div { flex: 1; }
     </style>
 </head>
 <body>
@@ -59,17 +61,17 @@
         <!-- Auth Screen -->
         <div id="auth-screen" class="p-4" style="text-align: center; margin-top: 100px;">
             <h1>Trainer Diary</h1>
-            <p>Академічна система моніторингу та гейміфікації</p>
-            <button class="btn btn-primary" id="login-btn" style="max-width: 300px;">Увійти через Google</button>
+            <p>Увійдіть через Google для доступу до щоденника</p>
+            <button class="btn btn-primary" id="login-btn" style="max-width: 300px; margin: 0 auto;">Увійти через Google</button>
         </div>
 
         <!-- Registration -->
         <div id="profile-form-screen" class="hidden p-4">
             <h2>Створення профілю</h2>
             <div class="form-group"><label>Роль</label><select id="reg-role"><option value="student">Студент</option><option value="teacher">Викладач</option></select></div>
-            <div class="form-group"><label>Спеціалізація</label><input type="text" id="reg-spec" placeholder="Наприклад: Футбол"></div>
-            <div class="form-group"><label>Група</label><input type="text" id="reg-group" placeholder="Наприклад: ФК-21"></div>
-            <button class="btn btn-primary" id="save-profile-btn">Почати</button>
+            <div class="form-group"><label>Спеціалізація (вид спорту)</label><input type="text" id="reg-spec" placeholder="Наприклад: Футбол"></div>
+            <div class="form-group"><label>Академічна група</label><input type="text" id="reg-group" placeholder="Наприклад: ФК-21"></div>
+            <button class="btn btn-primary" id="save-profile-btn">Завершити реєстрацію</button>
         </div>
 
         <!-- СТУДЕНТСЬКИЙ КАБІНЕТ -->
@@ -77,7 +79,7 @@
             <div class="header">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <h2 id="st-name" style="margin:0">Студент</h2>
-                    <button id="logout-st" style="background:none; border:1px solid white; color:white; border-radius:5px; cursor:pointer;">Вийти</button>
+                    <button id="logout-st" class="btn-logout">Вийти</button>
                 </div>
                 <div id="st-xp" class="xp-badge">0 XP</div>
             </div>
@@ -85,26 +87,26 @@
                 <button class="tab-btn active" data-tab="st-sm">Самоконтроль</button>
                 <button class="tab-btn" data-tab="st-mt">Тести</button>
                 <button class="tab-btn" data-tab="st-tasks">Завдання</button>
-                <button class="tab-btn" data-tab="st-rank">Рейтинг</button>
+                <button class="tab-btn" data-tab="st-rank">Рейтинг & Значки</button>
             </div>
 
-            <!-- Вкладка СМ -->
+            <!-- TAB: Самоконтроль -->
             <div id="st-sm" class="tab-content p-4">
                 <div class="card">
                     <div class="form-group"><label>Дата</label><input type="date" id="sm-date"></div>
-                    <div class="form-group"><label>RPE (1-10): <span id="rpe-val">5</span></label><input type="range" id="sm-rpe" min="1" max="10" value="5"></div>
+                    <div class="form-group"><label>RPE (1-10): <span id="rpe-val" style="color:var(--primary); font-weight:bold;">5</span></label><input type="range" id="sm-rpe" min="1" max="10" value="5"></div>
                     <div class="row">
                         <div class="form-group"><label>Втома (1-5)</label><select id="sm-fatigue"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
                         <div class="form-group"><label>Сон (1-5)</label><select id="sm-sleep"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
                     </div>
-                    <div class="form-group"><label>Біль у м'язах (1-5)</label><select id="sm-muscle"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></div>
+                    <div class="form-group"><label>М'язовий біль (1-5)</label><select id="sm-muscle"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></div>
                     <div class="form-group"><label>Нотатки</label><textarea id="sm-notes" rows="2"></textarea></div>
                     <button class="btn btn-primary" id="save-sm-btn">Зберегти стан (+10 XP)</button>
                 </div>
                 <div id="sm-history"></div>
             </div>
 
-            <!-- Вкладка Тести -->
+            <!-- TAB: Тести -->
             <div id="st-mt" class="tab-content hidden p-4">
                 <div class="card">
                     <div class="form-group"><label>Тест</label>
@@ -124,29 +126,31 @@
                         <input type="number" id="mt-val" placeholder="Результат" style="flex:2">
                         <select id="mt-unit" style="flex:1"><option>сек</option><option>м</option><option>разів</option></select>
                     </div>
-                    <button class="btn btn-accent" id="save-mt-btn" style="margin-top:10px">Зафіксувати спробу (+10 XP)</button>
+                    <button class="btn btn-accent" id="save-mt-btn" style="margin-top:10px">Зафіксувати результат (+10 XP)</button>
                 </div>
                 <div id="mt-history"></div>
             </div>
 
-            <!-- Вкладка Завдання -->
+            <!-- TAB: Завдання -->
             <div id="st-tasks" class="tab-content hidden p-4">
                 <div id="st-task-list"></div>
-                <div id="st-task-form" class="hidden card">
+                <div id="st-task-submit-box" class="hidden card">
                     <h4 id="active-task-title"></h4>
-                    <textarea id="task-submission" placeholder="Ваш звіт..." rows="3"></textarea>
-                    <input type="url" id="task-url" placeholder="Посилання на файл (Google Диск)" style="margin-top:10px">
-                    <button class="btn btn-primary" id="btn-submit-task" style="margin-top:10px">Здати завдання</button>
+                    <p id="active-task-desc" style="font-size:14px; color:#555;"></p>
+                    <div class="form-group"><label>Звіт про виконання</label><textarea id="task-submission" rows="3"></textarea></div>
+                    <div class="form-group"><label>Посилання на файл (Google Диск)</label><input type="url" id="task-url"></div>
+                    <button class="btn btn-primary" id="btn-submit-task">Здати завдання</button>
                 </div>
             </div>
 
-            <!-- Вкладка Рейтинг -->
+            <!-- TAB: Рейтинг -->
             <div id="st-rank" class="tab-content hidden p-4">
-                <h4>🏅 Лідерборд групи <span id="st-group-name"></span></h4>
+                <h4>🏆 Рейтинг групи <span id="st-group-name"></span></h4>
                 <table class="leader-table">
                     <thead><tr><th>#</th><th>Студент</th><th>Спеціалізація</th><th>XP</th></tr></thead>
                     <tbody id="leaderboard-body"></tbody>
                 </table>
+                <h4 style="margin-top:30px">🏅 Мої значки</h4>
                 <div id="badge-grid" class="badge-grid"></div>
             </div>
         </div>
@@ -156,48 +160,39 @@
             <div class="header">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <h2>Панель викладача: <span id="th-name"></span></h2>
-                    <button id="logout-th" style="background:none; border:1px solid white; color:white; border-radius:5px; cursor:pointer;">Вийти</button>
+                    <button id="logout-th" class="btn-logout">Вийти</button>
                 </div>
             </div>
             <div class="tabs">
-                <button class="tab-btn active" data-tab="th-students">Студенти</button>
+                <button class="tab-btn active" data-tab="th-students">Моніторинг</button>
                 <button class="tab-btn" data-tab="th-assign">Призначити завдання</button>
             </div>
 
-            <!-- Список студентів -->
             <div id="th-students" class="tab-content p-4">
-                <select id="th-group-filter" class="form-group"></select>
+                <div class="form-group"><label>Група</label><select id="th-group-filter"></select></div>
                 <div id="th-student-list"></div>
-
-                <!-- Деталі студента -->
                 <div id="th-details" class="hidden card" style="margin-top:20px">
                     <h3 id="th-sel-student-name"></h3>
-                    <h4>Моніторинг</h4>
-                    <div id="th-sm-view"></div>
-                    <h4>Тести</h4>
-                    <div id="th-mt-view"></div>
-                    <h4>Виконані завдання</h4>
-                    <div id="th-task-view"></div>
+                    <h4>Дані самоконтролю</h4><div id="th-sm-view"></div>
+                    <h4>Рухові тести</h4><div id="th-mt-view"></div>
+                    <h4>Здані завдання</h4><div id="th-task-view"></div>
                 </div>
             </div>
 
-            <!-- Призначення завдання -->
             <div id="th-assign" class="tab-content hidden p-4">
                 <div class="card">
                     <h3>Нове завдання</h3>
-                    <div class="form-group"><label>Адресат</label>
-                        <select id="assign-target"><option value="group">Усій групі</option></select>
-                    </div>
+                    <div class="form-group"><label>Адресат</label><select id="assign-target"><option value="all">Усій групі</option></select></div>
                     <div class="form-group"><label>Назва</label><input type="text" id="assign-title"></div>
                     <div class="form-group"><label>Категорія</label>
                         <select id="assign-cat">
-                            <option value="Regular">Загальне (Regular)</option>
-                            <option value="IoT">IoT (Internet of Things)</option>
-                            <option value="AI">AI (Artificial Intelligence)</option>
+                            <option value="Regular">Загальне</option>
+                            <option value="IoT">IoT</option>
+                            <option value="AI">AI</option>
                             <option value="Author">Авторська розробка</option>
                         </select>
                     </div>
-                    <div class="form-group"><label>Опис та вимоги</label><textarea id="assign-desc" rows="3"></textarea></div>
+                    <div class="form-group"><label>Вимоги</label><textarea id="assign-desc" rows="3"></textarea></div>
                     <div class="form-group"><label>Дедлайн</label><input type="datetime-local" id="assign-deadline"></div>
                     <button class="btn btn-primary" id="btn-publish-task">Опублікувати завдання</button>
                 </div>
@@ -206,10 +201,12 @@
     </div>
 
     <script type="module">
+        // Firebase Imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, collection, query, where, orderBy, limit, onSnapshot, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, addDoc, collection, query, where, getDocs, updateDoc, onSnapshot, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
+        // Твоя конфігурація
         const firebaseConfig = {
             apiKey: "AIzaSyDbrnCtj-D-KG_yxcNn5t_NcnokGzDMtzE",
             authDomain: "trainerdiary-4245e.firebaseapp.com",
@@ -235,9 +232,8 @@
 
         let currentUid, userData, selStudentId, activeTaskId, activeTaskData;
 
-        // UI Helpers
-        document.getElementById('sm-date').valueAsDate = new Date();
-        document.getElementById('sm-rpe').oninput = function() { document.getElementById('rpe-val').innerText = this.value; };
+        // UI Listeners
+        document.getElementById('sm-rpe').oninput = (e) => { document.getElementById('rpe-val').innerText = e.target.value; };
 
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.onclick = () => {
@@ -250,54 +246,71 @@
             };
         });
 
-        // Auth
+        // Auth Logic
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUid = user.uid;
                 const snap = await getDoc(doc(db, "Users", user.uid));
                 if (snap.exists()) {
                     userData = snap.data();
-                    userData.role === 'teacher' ? (showScreen('teacher-dashboard'), initTeacher()) : (showScreen('student-dashboard'), initStudent());
+                    userData.role === 'teacher' ? initTeacher() : initStudent();
                 } else { showScreen('profile-form-screen'); }
             } else { showScreen('auth-screen'); }
         });
 
+        function showScreen(id) {
+            document.querySelectorAll('.container > div').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        document.getElementById('login-btn').onclick = () => signInWithPopup(auth, provider);
+        document.getElementById('logout-st').onclick = () => signOut(auth);
+        document.getElementById('logout-th').onclick = () => signOut(auth);
+
+        document.getElementById('save-profile-btn').onclick = async () => {
+            const role = document.getElementById('reg-role').value;
+            const data = {
+                user_id: currentUid,
+                full_name: auth.currentUser.displayName,
+                email: auth.currentUser.email,
+                role: role,
+                sport_specialization: document.getElementById('reg-spec').value,
+                group_id: role === 'student' ? document.getElementById('reg-group').value : "Викладачі",
+                total_xp: 0,
+                created_at: serverTimestamp()
+            };
+            await setDoc(doc(db, "Users", currentUid), data);
+            location.reload();
+        };
+
         // --- ГЕЙМІФІКАЦІЯ ---
-        async function awardBadge(uid, badgeId, reason = "Автоматична нагорода") {
-            const badgeKey = `${uid}_${badgeId}`;
-            const check = await getDoc(doc(db, "User_Badges", badgeKey));
-            if (!check.exists()) {
-                await setDoc(doc(db, "User_Badges", badgeKey), {
+        async function awardBadge(uid, badgeId, reason) {
+            const bKey = `${uid}_${badgeId}`;
+            const bRef = doc(db, "User_Badges", bKey);
+            const bSnap = await getDoc(bRef);
+            if (!bSnap.exists()) {
+                await setDoc(bRef, {
                     user_id: uid, badge_id: badgeId, awarded_by: "system", reason_or_comment: reason, awarded_at: serverTimestamp()
                 });
                 await updateDoc(doc(db, "Users", uid), { total_xp: increment(BADGES[badgeId].xp) });
-                if (uid === currentUid) alert(`🎉 Відзнака: ${BADGES[badgeId].name}! +${BADGES[badgeId].xp} XP`);
+                if (uid === currentUid) alert(`🎉 Відзнака: ${BADGES[badgeId].name}!`);
             }
-        }
-
-        async function checkTurbo() {
-            const today = new Date().toISOString().split('T')[0];
-            const qSM = query(collection(db, "Self_Monitoring"), where("user_id", "==", currentUid), where("entry_date", "==", today));
-            const qMT = query(collection(db, "Motor_Tests"), where("user_id", "==", currentUid), where("day_id", "==", today));
-            const [s1, s2] = await Promise.all([getDocs(qSM), getDocs(qMT)]);
-            if ((s1.size + s2.size) >= 3) await awardBadge(currentUid, 'turbo');
         }
 
         // --- СТУДЕНТ ---
         function initStudent() {
+            showScreen('student-dashboard');
             document.getElementById('st-name').innerText = userData.full_name;
             document.getElementById('st-group-name').innerText = userData.group_id;
-            
-            onSnapshot(doc(db, "Users", currentUid), s => {
-                if(s.exists()) document.getElementById('st-xp').innerText = (s.data().total_xp || 0) + " XP";
-            });
 
-            // Лідерборд (Клієнтське сортування)
+            onSnapshot(doc(db, "Users", currentUid), s => { if(s.exists()) document.getElementById('st-xp').innerText = (s.data().total_xp || 0) + " XP"; });
+
+            // Лідерборд
             onSnapshot(query(collection(db, "Users"), where("group_id", "==", userData.group_id)), s => {
-                const students = s.docs.map(d => ({id: d.id, ...d.data()})).filter(u => u.role !== 'teacher');
-                students.sort((a,b) => (b.total_xp || 0) - (a.total_xp || 0));
-                document.getElementById('leaderboard-body').innerHTML = students.map((u, i) => `
-                    <tr class="${u.id === currentUid ? 'me' : ''}"><td>${i+1}</td><td>${u.full_name}</td><td>${u.sport_specialization}</td><td>${u.total_xp}</td></tr>
+                const list = s.docs.map(d => d.data()).filter(u => u.role === 'student');
+                list.sort((a,b) => (b.total_xp || 0) - (a.total_xp || 0));
+                document.getElementById('leaderboard-body').innerHTML = list.map((u, i) => `
+                    <tr class="${u.user_id === currentUid ? 'me' : ''}"><td>${i+1}</td><td>${u.full_name}</td><td>${u.sport_specialization}</td><td>${u.total_xp}</td></tr>
                 `).join('');
             });
 
@@ -307,168 +320,152 @@
                 document.getElementById('badge-grid').innerHTML = Object.keys(BADGES).map(id => `
                     <div class="badge-card ${earned.includes(id) ? 'earned' : ''}">
                         <span class="badge-icon">${BADGES[id].icon}</span>
-                        <span class="badge-name">${BADGES[id].name}</span>
+                        <b>${BADGES[id].name}</b>
                     </div>
                 `).join('');
             });
 
             // Завдання
             onSnapshot(query(collection(db, "Individual_Tasks"), where("user_id", "==", currentUid)), s => {
-                document.getElementById('st-task-list').innerHTML = s.docs.map(d => {
-                    const t = d.data();
-                    return `<div class="card" onclick="openStTask('${d.id}', '${t.task_title}', '${t.task_category}', '${t.deadline_at}')">
-                        <b>${t.task_title}</b> <small>${t.is_completed ? '✅' : '⏳'}</small><br>
-                        <small>Дедлайн: ${new Date(t.deadline_at).toLocaleString()}</small>
-                    </div>`;
-                }).join('');
+                const tasks = s.docs.map(d => ({id: d.id, ...d.data()}));
+                tasks.sort((a,b) => new Date(a.deadline_at) - new Date(b.deadline_at));
+                document.getElementById('st-task-list').innerHTML = tasks.length ? tasks.map(t => `
+                    <div class="card" onclick="openStTask('${t.id}', '${t.task_title}', '${t.task_category}', '${t.deadline_at}', '${t.task_description}')">
+                        <b>${t.task_title}</b> <small>[${t.task_category}]</small><br>
+                        <small>Дедлайн: ${new Date(t.deadline_at).toLocaleString()}</small> | ${t.is_completed ? '✅' : '⏳'}
+                    </div>
+                `).join('') : '<p>Завдань не знайдено</p>';
             });
         }
 
-        window.openStTask = (id, title, cat, dead) => {
+        window.openStTask = (id, title, cat, dead, desc) => {
             activeTaskId = id; activeTaskData = { cat, dead };
-            document.getElementById('st-task-form').classList.remove('hidden');
+            document.getElementById('st-task-submit-box').classList.remove('hidden');
             document.getElementById('active-task-title').innerText = title;
+            document.getElementById('active-task-desc').innerText = desc;
         };
 
         document.getElementById('btn-submit-task').onclick = async () => {
-            if(!activeTaskId) return;
             const now = new Date();
-            const sub = document.getElementById('task-submission').value;
-            const url = document.getElementById('task-url').value;
-            
             await updateDoc(doc(db, "Individual_Tasks", activeTaskId), {
-                is_completed: true, submitted_at: serverTimestamp(), submission_content: sub, attachment_url: url
+                is_completed: true, submission_content: document.getElementById('task-submission').value,
+                attachment_url: document.getElementById('task-url').value, submitted_at: serverTimestamp()
             });
-
-            // ТРИГЕРИ ГЕЙМІФІКАЦІЇ
-            if (activeTaskData.cat === 'IoT') await awardBadge(currentUid, 'iot_expert');
-            if (activeTaskData.cat === 'AI') await awardBadge(currentUid, 'ai_mind');
-            if (activeTaskData.dead && now < new Date(activeTaskData.dead)) await awardBadge(currentUid, 'strategist');
-
-            alert("Завдання здано!"); document.getElementById('st-task-form').classList.add('hidden');
+            if (activeTaskData.cat === 'IoT') await awardBadge(currentUid, 'iot_expert', 'IoT Категорія');
+            if (activeTaskData.cat === 'AI') await awardBadge(currentUid, 'ai_mind', 'AI Категорія');
+            if (activeTaskData.dead && now < new Date(activeTaskData.dead)) await awardBadge(currentUid, 'strategist', 'До дедлайну');
+            alert("Завдання здано!"); document.getElementById('st-task-submit-box').classList.add('hidden');
         };
 
         document.getElementById('save-sm-btn').onclick = async () => {
             const date = document.getElementById('sm-date').value;
             const docId = `${currentUid}_${date}`;
-            try {
-                const snap = await getDoc(doc(db, "Self_Monitoring", docId));
-                if (snap.exists()) return alert("Сьогодні дані вже внесено!");
-                await setDoc(doc(db, "Self_Monitoring", docId), {
-                    user_id: currentUid, entry_date: date, created_at: serverTimestamp(),
-                    rpe_score: parseInt(document.getElementById('sm-rpe').value),
-                    fatigue_level: parseInt(document.getElementById('sm-fatigue').value),
-                    sleep_quality: parseInt(document.getElementById('sm-sleep').value),
-                    muscle_soreness: parseInt(document.getElementById('sm-muscle').value),
-                    health_notes: document.getElementById('sm-notes').value
-                });
-                await updateDoc(doc(db, "Users", currentUid), { total_xp: increment(10) });
-                await checkTurbo(); alert("Збережено!");
-            } catch (e) { alert("Обмеження: 1 раз на день."); }
+            const snap = await getDoc(doc(db, "Self_Monitoring", docId));
+            if(snap.exists()) return alert("За цей день дані вже внесено!");
+            await setDoc(doc(db, "Self_Monitoring", docId), {
+                user_id: currentUid, entry_date: date, created_at: serverTimestamp(),
+                rpe_score: parseInt(document.getElementById('sm-rpe').value),
+                fatigue_level: parseInt(document.getElementById('sm-fatigue').value),
+                sleep_quality: parseInt(document.getElementById('sm-sleep').value),
+                muscle_soreness: parseInt(document.getElementById('sm-muscle').value),
+                health_notes: document.getElementById('sm-notes').value
+            });
+            await updateDoc(doc(db, "Users", currentUid), { total_xp: increment(10) });
+            alert("Збережено!");
         };
 
         document.getElementById('save-mt-btn').onclick = async () => {
             const type = document.getElementById('mt-type').value;
-            const dayId = new Date().toISOString().split('T')[0];
             const q = query(collection(db, "Motor_Tests"), where("user_id", "==", currentUid), where("test_type", "==", type));
-            const existing = await getDocs(q);
-            if (existing.size >= 3) return alert("Ліміт спроб (3) вичерпано!");
-
-            const docId = `${currentUid}_${type.replace(/\s/g, '')}_${existing.size + 1}`;
+            const snap = await getDocs(q);
+            if(snap.size >= 3) return alert("Максимум 3 спроби!");
+            const docId = `${currentUid}_${type.replace(/\s/g, '')}_${snap.size + 1}`;
             await setDoc(doc(db, "Motor_Tests", docId), {
-                user_id: currentUid, test_type: type, day_id: dayId, created_at: serverTimestamp(),
-                test_value: parseFloat(document.getElementById('mt-val').value),
-                measurement_unit: document.getElementById('mt-unit').value
+                user_id: currentUid, test_type: type, test_value: parseFloat(document.getElementById('mt-val').value),
+                measurement_unit: document.getElementById('mt-unit').value, created_at: serverTimestamp()
             });
             await updateDoc(doc(db, "Users", currentUid), { total_xp: increment(10) });
-            await checkTurbo(); alert("Зафіксовано!");
+            alert("Тест збережено!");
         };
 
         // --- ВИКЛАДАЧ ---
         async function initTeacher() {
+            showScreen('teacher-dashboard');
             document.getElementById('th-name').innerText = userData.full_name;
-            const snap = await getDocs(query(collection(db, "Users"), where("role", "==", "student")));
-            const students = snap.docs.map(d => ({id: d.id, ...d.data()}));
+            const uSnap = await getDocs(query(collection(db, "Users"), where("role", "==", "student")));
+            const students = uSnap.docs.map(d => ({id: d.id, ...d.data()}));
             const groups = [...new Set(students.map(s => s.group_id))];
-            
             const filter = document.getElementById('th-group-filter');
             filter.innerHTML = '<option value="">Група...</option>' + groups.map(g => `<option value="${g}">${g}</option>`).join('');
             
             filter.onchange = (e) => {
-                const list = students.filter(s => s.group_id === e.target.value);
-                document.getElementById('th-student-list').innerHTML = list.map(s => `
-                    <div class="card" onclick="openTeacherStudent('${s.id}', '${s.full_name}')">${s.full_name} (${s.total_xp} XP)</div>
+                const filtered = students.filter(s => s.group_id === e.target.value);
+                document.getElementById('th-student-list').innerHTML = filtered.map(s => `
+                    <div class="card" onclick="viewSt('${s.id}', '${s.full_name}')">${s.full_name} (${s.total_xp} XP)</div>
                 `).join('');
             };
         }
 
-        window.openTeacherStudent = (id, name) => {
+        window.viewSt = (id, name) => {
             selStudentId = id;
             document.getElementById('th-details').classList.remove('hidden');
             document.getElementById('th-sel-student-name').innerText = name;
-            
-            // Повний вивід СМ
             onSnapshot(query(collection(db, "Self_Monitoring"), where("user_id", "==", id), orderBy("created_at", "desc"), limit(5)), s => {
-                document.getElementById('th-sm-view').innerHTML = s.docs.map(d => {
-                    const v = d.data();
-                    return `<div class="history-card">
-                        <b>${v.entry_date}</b> | RPE: ${v.rpe_score}<br>
-                        <small>Втома: ${v.fatigue_level}, Сон: ${v.sleep_quality}, Біль: ${v.muscle_soreness}</small><br>
-                        <i>${v.health_notes || ''}</i>
-                    </div>`;
-                }).join('');
+                document.getElementById('th-sm-view').innerHTML = s.docs.map(d => `
+                    <div class="history-card"><b>${d.data().entry_date}</b>: RPE ${d.data().rpe_score}<br>
+                    <small>Втома: ${d.data().fatigue_level}, Сон: ${d.data().sleep_quality}, Біль: ${d.data().muscle_soreness}</small><br>
+                    <i>${d.data().health_notes || ''}</i></div>
+                `).join('');
             });
-
-            // Повний вивід Тестів
             onSnapshot(query(collection(db, "Motor_Tests"), where("user_id", "==", id), orderBy("created_at", "desc")), s => {
-                document.getElementById('th-mt-view').innerHTML = s.docs.map(d => `
-                    <div class="history-card"><b>${d.data().test_type}</b>: ${d.data().test_value} ${d.data().measurement_unit}</div>
-                `).join('');
+                document.getElementById('th-mt-view').innerHTML = s.docs.map(d => `<div class="history-card">${d.data().test_type}: ${d.data().test_value}</div>`).join('');
             });
-
-            // Завдання
             onSnapshot(query(collection(db, "Individual_Tasks"), where("user_id", "==", id), where("is_completed", "==", true)), s => {
-                document.getElementById('th-task-view').innerHTML = s.docs.map(d => `
-                    <div class="history-card">
-                        <b>${d.data().task_title}</b><br>
-                        <small>${d.data().submission_content}</small><br>
-                        <a href="${d.data().attachment_url}" target="_blank">Посилання</a>
-                    </div>
-                `).join('');
+                document.getElementById('th-task-view').innerHTML = s.docs.map(d => `<div class="history-card"><b>${d.data().task_title}</b><br><small>${d.data().submission_content}</small><br><a href="${d.data().attachment_url}" target="_blank">Посилання</a></div>`).join('');
             });
         };
 
         document.getElementById('btn-publish-task').onclick = async () => {
             const title = document.getElementById('assign-title').value;
-            const cat = document.getElementById('assign-cat').value;
-            const desc = document.getElementById('assign-desc').value;
-            const dead = document.getElementById('assign-deadline').value;
             const group = document.getElementById('th-group-filter').value;
+            if(!title || !group) return alert("Оберіть групу та назву!");
+            
+            const btn = document.getElementById('btn-publish-task');
+            btn.disabled = true;
 
-            if(!group || !title) return alert("Оберіть групу та назву");
-
-            const sSnap = await getDocs(query(collection(db, "Users"), where("group_id", "==", group), where("role", "==", "student")));
-            sSnap.forEach(async (sDoc) => {
-                await addDoc(collection(db, "Individual_Tasks"), {
-                    user_id: sDoc.id, task_title: title, task_category: cat, task_description: desc,
-                    deadline_at: dead, is_completed: false, submission_content: "", attachment_url: "", task_grade: null, created_at: serverTimestamp()
+            try {
+                const qStudents = query(collection(db, "Users"), where("group_id", "==", group), where("role", "==", "student"));
+                const sSnap = await getDocs(qStudents);
+                
+                const promises = sSnap.docs.map(sDoc => {
+                    return addDoc(collection(db, "Individual_Tasks"), {
+                        user_id: sDoc.id, group_id: group,
+                        task_title: title,
+                        task_category: document.getElementById('assign-cat').value,
+                        task_description: document.getElementById('assign-desc').value,
+                        deadline_at: document.getElementById('assign-deadline').value,
+                        is_completed: false, submission_content: "", attachment_url: "", task_grade: null,
+                        created_at: serverTimestamp()
+                    });
                 });
-            });
-            alert("Завдання призначено групі!");
+                
+                await Promise.all(promises);
+                alert("Завдання успішно призначено групі!");
+                document.getElementById('assign-title').value = "";
+                document.getElementById('assign-desc').value = "";
+            } catch (e) {
+                console.error(e);
+                alert("Помилка при створенні завдань.");
+            } finally {
+                btn.disabled = false;
+            }
         };
 
-        function showScreen(id) { document.querySelectorAll('.container > div').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
-        document.getElementById('login-btn').onclick = () => signInWithPopup(auth, provider);
-        document.getElementById('logout-st').onclick = () => signOut(auth);
-        document.getElementById('logout-th').onclick = () => signOut(auth);
-        document.getElementById('save-profile-btn').onclick = async () => {
-            const r = document.getElementById('reg-role').value;
-            await setDoc(doc(db, "Users", currentUid), {
-                user_id: currentUid, full_name: auth.currentUser.displayName, email: auth.currentUser.email,
-                role: r, sport_specialization: document.getElementById('reg-spec').value,
-                group_id: r === 'student' ? document.getElementById('reg-group').value : "Teacher",
-                total_xp: 0, created_at: serverTimestamp()
-            });
+        document.getElementById('btn-manual-badge').onclick = async () => {
+            if(selStudentId) {
+                await awardBadge(selStudentId, document.getElementById('manual-badge-id').value, document.getElementById('manual-badge-comment').value);
+                alert("Нагороджено!");
+            }
         };
     </script>
 </body>
