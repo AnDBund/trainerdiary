@@ -10,32 +10,28 @@
         .container { width: 100%; max-width: 500px; background: var(--white); min-height: 100vh; box-shadow: 0 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
         .p-4 { padding: 20px; }
         .hidden { display: none !important; }
-        .btn { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; }
+        .btn { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; margin-top: 10px; }
         .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:disabled { background: #ccc; }
+        .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
         
-        /* Header & Stats */
-        .user-header { background: var(--primary); color: white; padding: 25px 20px; border-radius: 0 0 25px 25px; }
+        .user-header { background: var(--primary); color: white; padding: 25px 20px; border-radius: 0 0 25px 25px; position: relative; }
         .xp-badge { background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; display: inline-block; margin-top: 8px; font-weight: bold; }
 
-        /* Tabs */
         .tabs { display: flex; border-bottom: 1px solid #ddd; background: #f8f9fa; }
         .tab-btn { flex: 1; padding: 15px; border: none; background: none; cursor: pointer; font-weight: 600; color: #777; border-bottom: 3px solid transparent; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: white; }
 
-        /* Forms */
-        .form-group { margin-bottom: 18px; }
+        .form-group { margin-bottom: 18px; text-align: left; }
         label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #444; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
-        input[type="range"] { padding: 0; }
+        
         .range-info { text-align: center; margin-top: 5px; }
-        .range-val { font-weight: bold; color: var(--primary); font-size: 18px; }
-        .range-desc { font-size: 12px; color: #888; display: block; }
+        .range-val { font-weight: bold; color: var(--primary); font-size: 20px; }
+        .range-desc { font-size: 13px; color: #666; display: block; margin-bottom: 10px; }
 
         .row { display: flex; gap: 15px; }
         .row > div { flex: 1; }
 
-        /* History */
         .history-list { margin-top: 25px; border-top: 2px solid #eee; padding-top: 15px; }
         .history-item { background: #f9f9f9; padding: 12px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--primary); font-size: 14px; }
     </style>
@@ -51,19 +47,19 @@
 
         <!-- Registration Screen -->
         <div id="profile-form-screen" class="hidden p-4">
-            <h2>Створення профілю</h2>
+            <h2>Завершення реєстрації</h2>
             <div class="form-group"><label>Роль</label><select id="reg-role"><option value="student">Студент</option><option value="teacher">Викладач</option></select></div>
             <div class="form-group"><label>Спеціалізація</label><input type="text" id="reg-spec" placeholder="Футбол"></div>
             <div class="form-group"><label>Група</label><input type="text" id="reg-group" placeholder="ФК-21"></div>
-            <button class="btn btn-primary" id="save-profile-btn">Почати</button>
+            <button class="btn btn-primary" id="save-profile-btn">Створити профіль</button>
         </div>
 
         <!-- Dashboard Screen -->
         <div id="dashboard-screen" class="hidden">
             <div class="user-header">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h2 id="user-name" style="margin:0">Користувач</h2>
-                    <button id="logout-btn" style="background:none; border:none; color:white; opacity:0.7; cursor:pointer;">Вийти</button>
+                <div style="display: flex; justify-content: space-between;">
+                    <h2 id="user-name" style="margin:0">...</h2>
+                    <button id="logout-btn" style="background:none; border:none; color:white; cursor:pointer;">Вийти</button>
                 </div>
                 <div id="user-xp" class="xp-badge">0 XP</div>
             </div>
@@ -73,12 +69,9 @@
                 <button class="tab-btn" id="tab-mt">Рухові тести</button>
             </div>
 
-            <!-- TAB 1: Самоконтроль -->
+            <!-- TAB: Самоконтроль -->
             <div id="sm-content" class="p-4">
-                <div class="form-group">
-                    <label>Дата</label>
-                    <input type="date" id="sm-date">
-                </div>
+                <div class="form-group"><label>Дата</label><input type="date" id="sm-date"></div>
                 
                 <div class="form-group">
                     <label>RPE (Навантаження):</label>
@@ -90,61 +83,30 @@
                 </div>
 
                 <div class="row">
-                    <div class="form-group">
-                        <label>Втома (1-5)</label>
-                        <select id="sm-fatigue"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Сон (1-5)</label>
-                        <select id="sm-sleep"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
-                    </div>
+                    <div class="form-group"><label>Втома (1-5)</label><select id="sm-fatigue"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+                    <div class="form-group"><label>Сон (1-5)</label><select id="sm-sleep"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
                 </div>
 
-                <div class="form-group">
-                    <label>Біль у м'язах (1-5)</label>
-                    <select id="sm-muscle"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select>
-                </div>
-
-                <div class="form-group">
-                    <label>Нотатки</label>
-                    <textarea id="sm-notes" rows="2" placeholder="Ваші відчуття..."></textarea>
-                </div>
+                <div class="form-group"><label>Біль у м'язах (1-5)</label><select id="sm-muscle"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></div>
+                <div class="form-group"><label>Нотатки</label><textarea id="sm-notes" rows="2"></textarea></div>
 
                 <button class="btn btn-primary" id="save-sm-btn">Зберегти стан (+10 XP)</button>
-                
-                <div class="history-list">
-                    <h4>Останні записи</h4>
-                    <div id="sm-history"></div>
-                </div>
+                <div class="history-list"><h4>Останні записи</h4><div id="sm-history"></div></div>
             </div>
 
-            <!-- TAB 2: Рухові тести -->
+            <!-- TAB: Тести -->
             <div id="mt-content" class="hidden p-4">
-                <div class="form-group">
-                    <label>Тип тесту</label>
+                <div class="form-group"><label>Тип тесту</label>
                     <select id="mt-type">
-                        <option>Біг 30 м</option>
-                        <option>Біг 1000 м</option>
-                        <option>Стрибок у довжину</option>
-                        <option>Підтягування</option>
+                        <option>Біг 30 м</option><option>Біг 1000 м</option><option>Стрибок у довжину</option><option>Підтягування</option>
                     </select>
                 </div>
                 <div class="row">
-                    <div class="form-group">
-                        <label>Результат</label>
-                        <input type="number" id="mt-value" step="0.01" placeholder="0.00">
-                    </div>
-                    <div class="form-group">
-                        <label>Одиниця</label>
-                        <select id="mt-unit"><option>сек</option><option>м</option><option>разів</option></select>
-                    </div>
+                    <div class="form-group"><label>Результат</label><input type="number" id="mt-value" step="0.01"></div>
+                    <div class="form-group"><label>Одиниця</label><select id="mt-unit"><option>сек</option><option>м</option><option>разів</option></select></div>
                 </div>
-                <button class="btn btn-primary" id="save-mt-btn" style="background: var(--accent);">Зафіксувати тест (+10 XP)</button>
-                
-                <div class="history-list">
-                    <h4>Історія тестів</h4>
-                    <div id="mt-history"></div>
-                </div>
+                <button class="btn btn-primary" id="save-mt-btn" style="background: var(--accent);">Зафіксувати результат (+10 XP)</button>
+                <div class="history-list"><h4>Історія тестів</h4><div id="mt-history"></div></div>
             </div>
         </div>
     </div>
@@ -152,7 +114,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, addDoc, collection, query, where, orderBy, limit, onSnapshot, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, getDocs, setDoc, addDoc, collection, query, where, orderBy, limit, onSnapshot, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDbrnCtj-D-KG_yxcNn5t_NcnokGzDMtzE",
@@ -171,16 +133,16 @@
 
         const rpeTexts = ["-", "Дуже легко", "Легко", "Помірно", "Досить легко", "Важко", "Важче", "Дуже важко", "Дуже-дуже важко", "Майже макс", "Максимум"];
 
-        // UI Logic
+        // UI Handlers
         document.getElementById('sm-date').valueAsDate = new Date();
         document.getElementById('sm-rpe').oninput = function() {
             document.getElementById('rpe-val').innerText = this.value;
             document.getElementById('rpe-desc').innerText = rpeTexts[this.value];
         };
 
-        // Tabs logic
-        document.getElementById('tab-sm').onclick = () => switchTab('sm');
-        document.getElementById('tab-mt').onclick = () => switchTab('mt');
+        // Tabs switching
+        document.getElementById('tab-sm').onclick = () => { switchTab('sm'); };
+        document.getElementById('tab-mt').onclick = () => { switchTab('mt'); };
 
         function switchTab(type) {
             document.getElementById('sm-content').classList.toggle('hidden', type !== 'sm');
@@ -189,13 +151,13 @@
             document.getElementById('tab-mt').classList.toggle('active', type === 'mt');
         }
 
-        // Firebase Logic
+        // Auth Logic
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 const userDoc = await getDoc(doc(db, "Users", user.uid));
                 if (userDoc.exists()) {
                     showScreen('dashboard-screen');
-                    renderDashboard(user, userDoc.data());
+                    initDashboard(user, userDoc.data());
                 } else {
                     showScreen('profile-form-screen');
                 }
@@ -215,57 +177,45 @@
                 email: user.email,
                 role: document.getElementById('reg-role').value,
                 sport_specialization: document.getElementById('reg-spec').value,
-                group_id: document.getElementById('reg-group').value,
+                group_id: document.getElementById('reg-group').value || "N/A",
                 total_xp: 0,
                 created_at: serverTimestamp()
             };
             await setDoc(doc(db, "Users", user.uid), data);
         };
 
-        function renderDashboard(user, userData) {
+        function initDashboard(user, userData) {
             document.getElementById('user-name').innerText = userData.full_name;
-            
-            // Listen for XP
-            onSnapshot(doc(db, "Users", user.uid), (d) => {
-                if(d.exists()) document.getElementById('user-xp').innerText = `${d.data().total_xp || 0} XP`;
+
+            // XP Listener
+            onSnapshot(doc(db, "Users", user.uid), (snap) => {
+                if (snap.exists()) document.getElementById('user-xp').innerText = (snap.data().total_xp || 0) + " XP";
             });
 
-            // Listen for SM History
+            // History Listeners
             const qSm = query(collection(db, "Self_Monitoring"), where("user_id", "==", user.uid), orderBy("created_at", "desc"), limit(5));
             onSnapshot(qSm, (s) => {
-                document.getElementById('sm-history').innerHTML = s.docs.map(doc => `
-                    <div class="history-item"><b>${doc.data().entry_date}</b> | RPE: ${doc.data().rpe_score} | Втома: ${doc.data().fatigue_level}</div>
-                `).join('');
-            });
+                document.getElementById('sm-history').innerHTML = s.docs.map(d => `<div class="history-item"><b>${d.data().entry_date}</b> | RPE: ${d.data().rpe_score}</div>`).join('');
+            }, (err) => console.error("SM History Error:", err));
 
-            // Listen for MT History
             const qMt = query(collection(db, "Motor_Tests"), where("user_id", "==", user.uid), orderBy("created_at", "desc"), limit(5));
             onSnapshot(qMt, (s) => {
-                document.getElementById('mt-history').innerHTML = s.docs.map(doc => `
-                    <div class="history-item" style="border-left-color: var(--accent)">
-                        <b>${doc.data().test_type}</b>: ${doc.data().test_value} ${doc.data().measurement_unit}
-                    </div>
-                `).join('');
-            });
+                document.getElementById('mt-history').innerHTML = s.docs.map(d => `<div class="history-item"><b>${d.data().test_type}</b>: ${d.data().test_value} ${d.data().measurement_unit}</div>`).join('');
+            }, (err) => console.error("MT History Error:", err));
         }
 
-        // SAVE SELF MONITORING (with Check)
+        // SAVE SM (With Daily Limit)
         document.getElementById('save-sm-btn').onclick = async () => {
             const user = auth.currentUser;
             const dateStr = document.getElementById('sm-date').value;
-            
             if(!dateStr) return alert("Оберіть дату");
 
             const btn = document.getElementById('save-sm-btn');
             btn.disabled = true;
 
             try {
-                // ПЕРЕВІРКА: Чи є вже запис на цю дату?
+                // Перевірка на дублікат дати
                 const q = query(collection(db, "Self_Monitoring"), where("user_id", "==", user.uid), where("entry_date", "==", dateStr));
-                const existing = await getDoc(q); // Це не спрацює безпосередньо для query, використовуємо getDocs
-                
-                // Виправлений метод перевірки
-                const { getDocs } = await import("https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js");
                 const querySnapshot = await getDocs(q);
 
                 if (!querySnapshot.empty) {
@@ -274,7 +224,7 @@
                     return;
                 }
 
-                const entry = {
+                await addDoc(collection(db, "Self_Monitoring"), {
                     user_id: user.uid,
                     entry_date: dateStr,
                     rpe_score: parseInt(document.getElementById('sm-rpe').value),
@@ -283,19 +233,18 @@
                     muscle_soreness: parseInt(document.getElementById('sm-muscle').value),
                     health_notes: document.getElementById('sm-notes').value,
                     created_at: serverTimestamp()
-                };
+                });
 
-                await addDoc(collection(db, "Self_Monitoring"), entry);
                 await setDoc(doc(db, "Users", user.uid), { total_xp: increment(10) }, { merge: true });
-                alert("Дані збережено! +10 XP");
+                alert("Збережено! +10 XP");
             } catch (e) {
                 console.error(e);
-                alert("Помилка збереження");
+                alert("Помилка доступу. Перевірте правила Firestore.");
             }
             btn.disabled = false;
         };
 
-        // SAVE MOTOR TEST
+        // SAVE MT
         document.getElementById('save-mt-btn').onclick = async () => {
             const user = auth.currentUser;
             const val = document.getElementById('mt-value').value;
@@ -305,19 +254,19 @@
             btn.disabled = true;
 
             try {
-                const entry = {
+                await addDoc(collection(db, "Motor_Tests"), {
                     user_id: user.uid,
                     test_type: document.getElementById('mt-type').value,
                     test_value: parseFloat(val),
                     measurement_unit: document.getElementById('mt-unit').value,
                     created_at: serverTimestamp()
-                };
-                await addDoc(collection(db, "Motor_Tests"), entry);
+                });
                 await setDoc(doc(db, "Users", user.uid), { total_xp: increment(10) }, { merge: true });
-                alert("Тест додано! +10 XP");
+                alert("Тест збережено! +10 XP");
                 document.getElementById('mt-value').value = "";
             } catch (e) {
-                alert("Помилка");
+                console.error(e);
+                alert("Помилка збереження тесту");
             }
             btn.disabled = false;
         };
