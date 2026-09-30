@@ -1,21 +1,16 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
-
-family-names: "Yefremenko"
-given-names: "Andrii"
-affiliation: "Kharkiv State Academy of Physical Culture"
+  - family-names: "Yefremenko"
+    given-names: "Andrii"
+    affiliation: "Kharkiv State Academy of Physical Culture"
 title: "Trainer Diary Pro"
 version: 1.0.2
 date-released: 2026-09-30
 license: MIT
 repository-code: "https://github.com/AnDBund/trainerdiary"
 keywords:
-
-"progressive web application"
-
-"sports coaching"
-
-"physical education"
-
-"gamification"
+  - "progressive web application"
+  - "sports coaching"
+  - "physical education"
+  - "gamification"
