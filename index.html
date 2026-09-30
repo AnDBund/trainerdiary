@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Trainer Diary - Pro Performance</title>
+    <title>Trainer Diary Pro - Performance & Gamification</title>
     
     <!-- PWA & Mobile Meta Tags -->
     <meta name="theme-color" content="#1a237e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="TrainerDiary">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-192.png">
 
     <style>
         :root {
@@ -20,7 +18,7 @@
             --accent: #00e676; /* Спортивний зелений */
             --bg: #f4f7f9;
             --card-bg: #ffffff;
-            --text-dark: #263238; /* Графітовий */
+            --text-dark: #263238;
             --text-light: #ffffff;
             --gray: #90a4ae;
             --warn: #ffd600;
@@ -29,332 +27,129 @@
             --radius: 18px;
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg);
-            color: var(--text-dark);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            line-height: 1.5;
+            background-color: var(--bg); color: var(--text-dark); margin: 0; display: flex; justify-content: center;
         }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-            background: var(--bg);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
+        .container { width: 100%; max-width: 600px; background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; }
         .hidden { display: none !important; }
 
         /* Header UI */
         .header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: var(--text-light);
-            padding: 30px 20px 25px;
-            border-radius: 0 0 25px 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            color: var(--text-light); padding: 30px 20px 25px; border-radius: 0 0 25px 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 100;
         }
-
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .header h2 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .xp-badge {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 8px 18px;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 15px;
-            border: 1px solid rgba(255,255,255,0.2);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);
+            padding: 8px 18px; border-radius: 30px; font-weight: 700; font-size: 15px;
+            border: 1px solid rgba(255,255,255,0.2); display: inline-flex; align-items: center; gap: 8px;
         }
-
-        .xp-badge::before { content: '⚡'; color: var(--warn); }
 
         /* Navigation Tabs */
         .tabs {
-            display: flex;
-            background: var(--white);
-            margin: -15px 15px 10px;
-            padding: 5px;
-            border-radius: 15px;
-            background: white;
-            box-shadow: var(--shadow);
-            overflow-x: auto;
-            position: relative;
-            z-index: 101;
+            display: flex; background: white; margin: -15px 15px 10px; padding: 5px;
+            border-radius: 15px; box-shadow: var(--shadow); overflow-x: auto; position: relative; z-index: 101;
         }
-
         .tab-btn {
-            flex: 1;
-            padding: 12px 10px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-weight: 700;
-            color: var(--gray);
-            font-size: 13px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 12px;
-            white-space: nowrap;
+            flex: 1; padding: 12px 10px; border: none; background: none; cursor: pointer;
+            font-weight: 700; color: var(--gray); font-size: 13px; border-radius: 12px; white-space: nowrap;
         }
+        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(26, 35, 126, 0.3); }
 
-        .tab-btn.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 10px rgba(26, 35, 126, 0.3);
-        }
-
-        /* Forms & Widgets */
+        /* Cards */
         .p-4 { padding: 15px; }
         .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0,0,0,0.02);
+            background: var(--card-bg); border-radius: var(--radius); padding: 20px;
+            margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02);
         }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 700;
-            font-size: 14px;
-            color: var(--text-dark);
-            padding-left: 4px;
-        }
-
+        label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 14px; color: var(--text-dark); }
         input, select, textarea {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #edf2f4;
-            border-radius: 12px;
-            background: #f8fafc;
-            font-size: 16px;
-            transition: all 0.2s;
-            color: var(--text-dark);
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary-light);
-            background: white;
-        }
-
-        /* Large Touch Inputs */
-        input[type="range"] {
-            -webkit-appearance: none;
-            height: 12px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            margin: 20px 0;
-            border: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 28px;
-            height: 28px;
-            background: var(--primary);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-            border: 3px solid white;
+            width: 100%; padding: 14px 16px; border: 2px solid #edf2f4; border-radius: 12px;
+            background: #f8fafc; font-size: 16px; color: var(--text-dark); margin-bottom: 10px;
         }
 
         /* Buttons */
         .btn {
-            padding: 16px;
-            border-radius: 14px;
-            border: none;
-            font-weight: 800;
-            cursor: pointer;
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.3s;
-            width: 100%;
+            padding: 16px; border-radius: 14px; border: none; font-weight: 800; cursor: pointer;
+            font-size: 14px; text-transform: uppercase; transition: 0.3s; width: 100%;
         }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            box-shadow: 0 6px 15px rgba(26, 35, 126, 0.3);
-        }
-
-        .btn-accent {
-            background: linear-gradient(135deg, #00c853 0%, var(--accent) 100%);
-            color: white;
-            box-shadow: 0 6px 15px rgba(0, 230, 118, 0.3);
-        }
-
-        .btn:active { transform: scale(0.97); }
-
-        .btn-outline {
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 6px 14px;
-            font-size: 12px;
-            border-radius: 10px;
-            font-weight: 600;
-            width: auto;
-        }
+        .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; }
+        .btn-accent { background: linear-gradient(135deg, #00c853 0%, var(--accent) 100%); color: white; }
+        .btn-csv { background: #546e7a; color: white; margin-bottom: 15px; font-size: 12px; padding: 10px; }
+        .btn-logout { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; font-size: 11px; border-radius: 10px; width: auto; }
 
         /* Badge Showcase */
-        .badge-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 12px;
-            margin-top: 15px;
-        }
-
+        .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-top: 15px; }
         .badge-card {
-            background: white;
-            border-radius: 20px;
-            padding: 15px 10px;
-            text-align: center;
-            border: 2px solid #eceff1;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
+            background: white; border-radius: 20px; padding: 15px 10px; text-align: center;
+            border: 2px solid #eceff1; opacity: 0.3; filter: grayscale(1); transition: 0.4s;
         }
-
-        .badge-card span { font-size: 32px; display: block; margin-bottom: 8px; filter: grayscale(1); opacity: 0.3; }
-        .badge-card b { font-size: 11px; color: var(--gray); display: block; line-height: 1.2; }
-
         .badge-card.earned {
-            border: 2px solid var(--warn);
-            background: linear-gradient(135deg, #fffde7 0%, #fff9c4 100%);
-            box-shadow: 0 4px 10px rgba(255, 214, 0, 0.2);
-            opacity: 1;
+            opacity: 1; filter: grayscale(0); border: 2px solid var(--warn);
+            background: linear-gradient(135deg, #fffde7 0%, #fff9c4 100%); transform: scale(1.05);
         }
+        .badge-icon { font-size: 35px; display: block; margin-bottom: 8px; }
+        .badge-name { font-size: 13px; font-weight: 800; display: block; }
+        .badge-reason { font-size: 10px; color: #546e7a; display: block; margin-top: 5px; font-style: italic; }
 
-        .badge-card.earned span { filter: none; opacity: 1; transform: scale(1.1); }
-        .badge-card.earned b { color: var(--primary); }
+        /* Leaderboard */
+        .leader-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        .leader-table tr { background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .leader-table td { padding: 14px 10px; font-size: 14px; }
+        .leader-table td:first-child { border-radius: 12px 0 0 12px; font-weight: 800; text-align: center; width: 40px; }
+        .leader-table td:last-child { border-radius: 0 12px 12px 0; font-weight: 800; text-align: right; color: var(--primary); }
+        .leader-table tr.me { border: 2px solid var(--primary); background: #e8f0fe; }
 
-        /* Leaderboard Premium Style */
-        .leader-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px;
-            margin-top: 10px;
-        }
+        /* RPE Slider */
+        input[type="range"] { -webkit-appearance: none; height: 10px; background: #e0e0e0; border-radius: 10px; margin: 15px 0; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 25px; height: 25px; background: var(--primary); border-radius: 50%; border: 3px solid white; cursor: pointer; }
 
-        .leader-table th { padding: 10px; font-size: 12px; color: var(--gray); text-transform: uppercase; text-align: left; }
-        
-        .leader-table tr { background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.03); transition: transform 0.2s; }
-        
-        .leader-table td {
-            padding: 14px 10px;
-            font-size: 15px;
-        }
-
-        .leader-table td:first-child { border-radius: 12px 0 0 12px; font-weight: 800; text-align: center; width: 45px; }
-        .leader-table td:last-child { border-radius: 0 12px 12px 0; font-weight: 800; color: var(--primary); text-align: right; }
-
-        /* Top 3 Accents */
-        .leader-table tr:nth-child(1) td:first-child { background: #FFD700; color: #fff; }
-        .leader-table tr:nth-child(2) td:first-child { background: #C0C0C0; color: #fff; }
-        .leader-table tr:nth-child(3) td:first-child { background: #CD7F32; color: #fff; }
-
-        .leader-table tr.me {
-            background: linear-gradient(90deg, #e8f0fe 0%, #ffffff 100%);
-            border: 2px solid var(--primary);
-            box-shadow: 0 4px 12px rgba(26, 35, 126, 0.15);
-        }
-        .leader-table tr.me td { color: var(--primary); }
-
-        /* History items */
-        .history-item {
-            background: #ffffff;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 12px;
-            border-left: 5px solid var(--primary-light);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-            font-size: 14px;
-        }
-
-        .drive-box {
-            background: #e3f2fd;
-            padding: 16px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-            border: 2px dashed var(--primary-light);
-        }
-
-        .row { display: flex; gap: 10px; }
-        .row > div { flex: 1; }
-
-        /* Mobile Adjustments */
-        @media (max-width: 480px) {
-            .header { padding-top: 40px; }
-            .tabs { margin: -10px 10px 10px; }
-            .card { padding: 15px; }
-        }
+        .history-item { background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 5px solid var(--primary-light); font-size: 13px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Екран авторизації -->
+        <!-- AUTH SCREEN -->
         <div id="auth-screen" class="p-4" style="text-align: center; margin-top: 100px;">
-            <div style="font-size: 60px; margin-bottom: 20px;">🏆</div>
-            <h1 style="font-weight: 900; letter-spacing: -1px; margin-bottom: 5px;">Trainer Diary</h1>
-            <p style="color: var(--gray); margin-bottom: 40px;">Professional Training Monitor</p>
+            <div style="font-size: 60px; margin-bottom: 20px;">🏅</div>
+            <h1 style="font-weight: 900; margin-bottom: 5px;">Trainer Diary</h1>
+            <p style="color: var(--gray); margin-bottom: 40px;">Professional Academic Monitoring</p>
             <button class="btn btn-primary" id="login-btn">Увійти через Google</button>
         </div>
 
-        <!-- Реєстрація -->
+        <!-- REGISTRATION -->
         <div id="profile-form-screen" class="hidden p-4">
-            <h2 style="font-weight: 800;">Реєстрація</h2>
+            <h2 style="font-weight: 800;">Налаштування профілю</h2>
             <div class="card">
                 <div class="form-group">
-                    <label>Ваша роль</label>
+                    <label>Роль</label>
                     <select id="reg-role">
                         <option value="student">Студент</option>
                         <option value="teacher">Викладач</option>
                     </select>
                 </div>
                 <div id="teacher-key-box" class="form-group hidden">
-                    <label style="color: var(--danger);">Секретний ключ</label>
-                    <input type="password" id="reg-teacher-key" placeholder="Введіть код доступу">
+                    <label style="color: var(--danger);">Код викладача</label>
+                    <input type="password" id="reg-teacher-key" placeholder="Введіть SECRET_KEY">
                 </div>
-                <div class="form-group"><label>Спеціалізація</label><input type="text" id="reg-spec" placeholder="Напр: Футбол"></div>
-                <div id="st-group-box" class="form-group"><label>Академічна група</label><input type="text" id="reg-group" placeholder="Напр: ФК-21"></div>
-                <button class="btn btn-primary" id="save-profile-btn" style="margin-top: 10px;">Завершити</button>
+                <div class="form-group"><label>Спеціалізація</label><input type="text" id="reg-spec" placeholder="Напр: Плавання"></div>
+                <div class="form-group"><label>Спортивний розряд</label><input type="text" id="reg-rank" placeholder="Напр: КМС"></div>
+                <div id="st-group-box" class="form-group"><label>Група</label><input type="text" id="reg-group" placeholder="Напр: ФК-21"></div>
+                <button class="btn btn-primary" id="save-profile-btn">Почати роботу</button>
             </div>
         </div>
 
-        <!-- СТУДЕНТСЬКИЙ КАБІНЕТ -->
+        <!-- STUDENT DASHBOARD -->
         <div id="student-dashboard" class="hidden">
             <div class="header">
                 <div class="header-top">
-                    <h2 id="st-name">Студент</h2>
-                    <button id="logout-st" class="btn btn-outline">Вийти</button>
+                    <h2 id="st-name">Користувач</h2>
+                    <button id="logout-st" class="btn-logout">Вийти</button>
                 </div>
                 <div id="st-xp" class="xp-badge">0 XP</div>
             </div>
@@ -366,29 +161,30 @@
                 <button class="tab-btn" data-tab="st-rank">🏆 Рейтинг</button>
             </div>
 
+            <!-- TAB: Самоконтроль -->
             <div id="st-sm" class="tab-content p-4">
                 <div class="card">
                     <div class="form-group"><label>Дата</label><input type="date" id="sm-date"></div>
                     <div class="form-group">
-                        <label>RPE (Навантаження): <span id="rpe-val" class="rpe-num">5</span></label>
+                        <label>RPE (Навантаження): <span id="rpe-val" style="color:var(--primary); font-weight:bold;">5</span></label>
                         <input type="range" id="sm-rpe" min="1" max="10" value="5">
                     </div>
                     <div class="row">
                         <div class="form-group"><label>Втома</label><select id="sm-fatigue"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
                         <div class="form-group"><label>Сон</label><select id="sm-sleep"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
                     </div>
-                    <div class="form-group"><label>Біль у м'язах (1-5)</label><select id="sm-muscle"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></div>
-                    <div class="form-group"><label>Примітки</label><textarea id="sm-notes" rows="2" placeholder="Як пройшло тренування?"></textarea></div>
-                    <button class="btn btn-primary" id="save-sm-btn">Зберегти стан</button>
+                    <div class="form-group"><label>М'язовий біль (1-5)</label><select id="sm-muscle"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></div>
+                    <div class="form-group"><label>Нотатки</label><textarea id="sm-notes" rows="2" placeholder="Ваше самопочуття..."></textarea></div>
+                    <button class="btn btn-primary" id="save-sm-btn">Зберегти щоденник (+10 XP)</button>
                 </div>
-                <h3 style="padding-left: 5px; font-weight: 800;">Останні записи</h3>
                 <div id="st-sm-history"></div>
             </div>
 
+            <!-- TAB: Тести -->
             <div id="st-mt" class="tab-content hidden p-4">
                 <div class="card">
                     <div class="form-group">
-                        <label>Оберіть норматив</label>
+                        <label>Норматив</label>
                         <select id="mt-type">
                             <option>Біг на 30 метрів з високого старту</option>
                             <option>12-хвилинний біговий тест Купера</option>
@@ -402,99 +198,90 @@
                         </select>
                     </div>
                     <div class="row">
-                        <input type="number" id="mt-val" placeholder="Ваш результат" style="flex:2">
+                        <input type="number" id="mt-val" placeholder="Результат" style="flex:2">
                         <select id="mt-unit" style="flex:1"><option>сек</option><option>м</option><option>разів</option><option>см</option></select>
                     </div>
-                    <button class="btn btn-accent" id="save-mt-btn" style="margin-top:15px">Зафіксувати спробу</button>
-                </div>
-                <div class="drive-box">
-                    <p style="margin:0 0 10px; font-size: 13px; color: var(--primary);">Для перевірки техніки завантажте відео:</p>
-                    <a href="https://drive.google.com/drive/folders/13wjY8OT-6ycHIVc0pxFy1XpXmrwVhD8e?usp=sharing" target="_blank" class="btn btn-primary" style="text-decoration:none; display:block; padding: 12px; font-size: 14px;">📁 Перейти на Google Диск</a>
+                    <button class="btn btn-accent" id="save-mt-btn" style="margin-top:10px">Зафіксувати спробу (+10 XP)</button>
                 </div>
                 <div id="st-mt-history"></div>
             </div>
 
+            <!-- TAB: Завдання -->
             <div id="st-tasks" class="tab-content hidden p-4">
                 <div id="st-task-list"></div>
-                <div id="st-task-form" class="hidden card" style="background: #fff8e1; border: 2px solid var(--warn);">
-                    <h4 id="active-task-title" style="margin-top:0">Здача завдання</h4>
-                    <textarea id="st-task-comment" placeholder="Ваш звіт..." rows="3"></textarea>
-                    <input type="url" id="st-task-url" placeholder="Посилання на файл (Google Диск)" style="margin-top:10px">
-                    <button class="btn btn-accent" id="btn-submit-task" style="margin-top:10px">Надіслати на перевірку</button>
+                <div id="st-task-form" class="hidden card" style="border: 2px solid var(--primary-light);">
+                    <h3 id="active-task-title" style="margin-top:0">Здача завдання</h3>
+                    <div class="form-group"><label>Звіт/Коментар</label><textarea id="st-task-comment" rows="3"></textarea></div>
+                    <div class="form-group"><label>Посилання на розробку (Drive/URL)</label><input type="url" id="st-task-url" placeholder="https://..."></div>
+                    <button class="btn btn-primary" id="btn-submit-task">Здати завдання (+40 XP)</button>
                 </div>
             </div>
 
+            <!-- TAB: Рейтинг & Значки -->
             <div id="st-rank" class="tab-content hidden p-4">
                 <div class="card">
-                    <h3 style="margin-top:0; font-weight: 800;">🏅 Мої досягнення</h3>
+                    <h3 style="margin-top:0">🏅 Мої відзнаки</h3>
                     <div id="badge-grid" class="badge-grid"></div>
                 </div>
-                
-                <h3 style="padding-left: 5px; font-weight: 800;">🏆 Лідерборд групи</h3>
-                <table class="leader-table">
-                    <thead><tr><th>#</th><th>Студент</th><th>Бал XP</th></tr></thead>
-                    <tbody id="leaderboard-body"></tbody>
-                </table>
+                <h3 style="margin-left: 5px;">🏆 Лідерборд групи</h3>
+                <table class="leader-table"><tbody id="leaderboard-body"></tbody></table>
             </div>
         </div>
 
-        <!-- КАБІНЕТ ВИКЛАДАЧА -->
+        <!-- TEACHER DASHBOARD -->
         <div id="teacher-dashboard" class="hidden">
             <div class="header">
                 <div class="header-top">
                     <h2 id="th-name">Викладач</h2>
-                    <button id="logout-th" class="btn btn-outline">Вийти</button>
+                    <button id="logout-th" class="btn-logout">Вийти</button>
                 </div>
             </div>
             <div class="tabs">
                 <button class="tab-btn active" data-tab="th-main">👥 Студенти</button>
-                <button class="tab-btn" data-tab="th-assign">➕ Призначити</button>
+                <button class="tab-btn" data-tab="th-assign">➕ Завдання</button>
             </div>
 
             <div id="th-main" class="tab-content p-4">
-                <select id="th-group-filter" class="form-group"></select>
+                <div style="display:flex; gap:10px; align-items:flex-end;">
+                    <div style="flex:1"><label>Група</label><select id="th-group-filter"></select></div>
+                    <button id="btn-export-csv" class="btn btn-csv" style="width:auto;">📥 CSV Експорт</button>
+                </div>
                 <div id="th-student-list"></div>
                 
                 <div id="th-details" class="hidden card" style="margin-top:20px; border-top: 6px solid var(--primary);">
                     <h2 id="th-sel-name" style="margin-top:0"></h2>
-                    
-                    <h4 style="border-bottom: 2px solid #eee; padding-bottom: 5px;">📊 Моніторинг</h4>
                     <div id="th-view-sm"></div>
-                    
-                    <h4 style="border-bottom: 2px solid #eee; padding-bottom: 5px;">🏃 Тести</h4>
                     <div id="th-view-mt"></div>
-                    
-                    <h4 style="border-bottom: 2px solid #eee; padding-bottom: 5px;">📝 Завдання</h4>
                     <div id="th-view-tasks"></div>
 
-                    <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-top: 20px;">
-                        <label>Вручити нагороду</label>
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-top: 20px; border: 1px solid #eee;">
+                        <label>Нагородити значком (експертно)</label>
                         <select id="th-badge-sel">
-                            <option value="trainer">Тренер (+50 XP)</option>
-                            <option value="iot_expert">Фахівець (+40 XP)</option>
-                            <option value="ai_mind">Штучка-інтелект (+35 XP)</option>
+                            <option value="trainer">Значок "Тренер" (+50 XP)</option>
+                            <option value="iot_expert">Значок "Фахівець" (+40 XP)</option>
+                            <option value="ai_mind">Значок "Штучка-інтелект" (+35 XP)</option>
                         </select>
-                        <textarea id="th-badge-reason" placeholder="Обґрунтування..." rows="2" style="margin-top:10px"></textarea>
-                        <button class="btn btn-accent" id="th-btn-award" style="margin-top:10px">Нагородити</button>
+                        <textarea id="th-badge-reason" placeholder="Ваш методичний коментар..." rows="2" style="margin-top:10px"></textarea>
+                        <button class="btn btn-accent" id="th-btn-award" style="margin-top:10px">Вручити відзнаку</button>
                     </div>
                 </div>
             </div>
 
             <div id="th-assign" class="tab-content hidden p-4">
                 <div class="card">
-                    <h3 style="margin-top:0">Нове завдання</h3>
+                    <h3>Нове завдання</h3>
                     <div class="form-group"><label>Назва</label><input type="text" id="as-title"></div>
-                    <div class="form-group"><label>Категорія</label>
+                    <div class="form-group"><label>Категорія (для гейміфікації)</label>
                         <select id="as-cat">
-                            <option value="Regular">Загальне</option>
-                            <option value="IoT">IoT</option>
-                            <option value="AI">AI</option>
+                            <option value="Regular">Загальне (Regular)</option>
+                            <option value="IoT">IoT (Internet of Things)</option>
+                            <option value="AI">AI (Штучний інтелект)</option>
                             <option value="Author">Авторська розробка</option>
                         </select>
                     </div>
-                    <div class="form-group"><label>Вимоги</label><textarea id="as-desc" rows="4" placeholder="Методичні рекомендації..."></textarea></div>
+                    <div class="form-group"><label>Методичні вимоги</label><textarea id="as-desc" rows="4"></textarea></div>
                     <div class="form-group"><label>Дедлайн</label><input type="datetime-local" id="as-dead"></div>
-                    <button class="btn btn-primary" id="th-btn-publish">Опублікувати для групи</button>
+                    <button class="btn btn-primary" id="th-btn-publish">Призначити групі</button>
                 </div>
             </div>
         </div>
@@ -523,10 +310,10 @@
 
         const BADGES_LIB = {
             turbo: { name: "Турбо", icon: "⚡", xp: 30, desc: "3+ активності за добу" },
-            trainer: { name: "Тренер", icon: "📋", xp: 50, desc: "Авторська методика" },
-            iot_expert: { name: "Фахівець", icon: "⌚", xp: 40, desc: "Використання IoT" },
-            strategist: { name: "Стратег", icon: "🎯", xp: 35, desc: "Здача до дедлайну" },
-            ai_mind: { name: "Штучка-інтелект", icon: "🤖", xp: 35, desc: "Робота з ШІ" }
+            trainer: { name: "Тренер", icon: "📋", xp: 50, desc: "Експертна відзнака" },
+            iot_expert: { name: "Фахівець", icon: "⌚", xp: 40, desc: "Робота з IoT" },
+            strategist: { name: "Стратег", icon: "🎯", xp: 35, desc: "Вчасна здача" },
+            ai_mind: { name: "Штучка-інтелект", icon: "🤖", xp: 35, desc: "Використання ШІ" }
         };
 
         let currentUid, userData, selStudentId, activeTaskId, activeTaskData;
@@ -560,24 +347,22 @@
             } else { show('auth-screen'); hide('student-dashboard'); hide('teacher-dashboard'); hide('profile-form-screen'); }
         });
 
-        el('login-btn').onclick = () => signInWithPopup(auth, provider).catch(console.error);
-        el('logout-st').onclick = el('logout-th').onclick = () => signOut(auth);
+        el('login-btn').onclick = () => signInWithPopup(auth, provider);
+        el('logout-st').onclick = el('logout-th').onclick = () => signOut(auth).then(() => location.reload());
 
         el('save-profile-btn').onclick = async () => {
             const role = el('reg-role').value;
-            if (role === 'teacher' && el('reg-teacher-key').value !== TEACHER_SECRET_KEY) {
-                return alert("Неправильний ключ викладача!");
-            }
+            if (role === 'teacher' && el('reg-teacher-key').value !== TEACHER_SECRET_KEY) return alert("Невірний код!");
             const data = {
                 user_id: currentUid, full_name: auth.currentUser.displayName, email: auth.currentUser.email,
-                role: role, sport_specialization: el('reg-spec').value,
-                group_id: role === 'student' ? el('reg-group').value : "Викладачі",
-                total_xp: 0, created_at: serverTimestamp()
+                role: role, sport_specialization: el('reg-spec').value, sport_rank: el('reg-rank').value,
+                group_id: role === 'student' ? el('reg-group').value : "Teacher", total_xp: 0, created_at: serverTimestamp()
             };
             await setDoc(doc(db, "Users", currentUid), data);
             location.reload();
         };
 
+        // --- CORE GAMIFICATION LOGIC ---
         async function awardBadge(uid, badgeId, reason, teacherId = 'system') {
             const bKey = `${uid}_${badgeId}`;
             const bRef = doc(db, "User_Badges", bKey);
@@ -589,159 +374,124 @@
             }
         }
 
-        async function checkTurbo() {
+        async function checkTurboTrigger() {
             const today = new Date().toISOString().split('T')[0];
             const qSM = query(collection(db, "Self_Monitoring"), where("user_id", "==", currentUid), where("entry_date", "==", today));
             const qMT = query(collection(db, "Motor_Tests"), where("user_id", "==", currentUid));
-            const [sSM, sMT] = await Promise.all([getDocs(qSM), getDocs(qMT)]);
-            const todayMT = sMT.docs.filter(d => d.data().day_id === today);
-            if ((sSM.size + todayMT.length) >= 3) await awardBadge(currentUid, 'turbo', '3+ активності за добу');
+            const qIT = query(collection(db, "Individual_Tasks"), where("user_id", "==", currentUid), where("is_completed", "==", true));
+            
+            const [sSM, sMT, sIT] = await Promise.all([getDocs(qSM), getDocs(qMT), getDocs(qIT)]);
+            const todayActions = sSM.size + sMT.docs.filter(d => d.data().day_id === today).length + sIT.docs.filter(d => d.data().submitted_at?.toDate().toISOString().split('T')[0] === today).length;
+            if (todayActions >= 3) await awardBadge(currentUid, 'turbo', '3+ активності за добу');
         }
 
+        // --- STUDENT ---
         function initStudent() {
             hide('auth-screen'); show('student-dashboard');
             el('st-name').innerText = userData.full_name;
             onSnapshot(doc(db, "Users", currentUid), s => { if(s.exists()) el('st-xp').innerText = (s.data().total_xp || 0) + " XP"; });
 
+            // Leaderboard & Badges
             onSnapshot(query(collection(db, "Users"), where("group_id", "==", userData.group_id)), s => {
-                const list = s.docs.map(d => d.data()).filter(u => u.role === 'student');
-                list.sort((a,b) => (b.total_xp || 0) - (a.total_xp || 0));
-                el('leaderboard-body').innerHTML = list.map((u, i) => `
-                    <tr class="${u.user_id === currentUid ? 'me' : ''}"><td>${i+1}</td><td>${u.full_name}</td><td>${u.total_xp}</td></tr>
-                `).join('');
+                const list = s.docs.map(d => d.data()).filter(u => u.role === 'student').sort((a,b) => (b.total_xp || 0) - (a.total_xp || 0));
+                el('leaderboard-body').innerHTML = list.map((u, i) => `<tr class="${u.user_id === currentUid ? 'me':''}"><td>${i+1}</td><td>${u.full_name}</td><td>${u.total_xp} XP</td></tr>`).join('');
             });
 
             onSnapshot(query(collection(db, "User_Badges"), where("user_id", "==", currentUid)), s => {
-                const earned = s.docs.map(d => d.data().badge_id);
-                el('badge-grid').innerHTML = Object.keys(BADGES_LIB).map(id => `
-                    <div class="badge-card ${earned.includes(id) ? 'earned' : ''}">
-                        <span>${BADGES_LIB[id].icon}</span>
-                        <b>${BADGES_LIB[id].name}</b>
-                        <p style="margin:3px 0 0; font-size:8px">${earned.includes(id) ? 'ОТРИМАНО' : BADGES_LIB[id].desc}</p>
-                    </div>
-                `).join('');
+                const earned = {}; s.docs.forEach(d => earned[d.data().badge_id] = d.data());
+                el('badge-grid').innerHTML = Object.keys(BADGES_LIB).map(id => {
+                    const b = BADGES_LIB[id]; const isE = !!earned[id];
+                    return `<div class="badge-card ${isE ? 'earned':''}">
+                        <span class="badge-icon">${b.icon}</span><b>${b.name}</b>
+                        <span class="badge-reason">${isE ? (earned[id].awarded_by === 'system' ? 'Виконано критерій': 'Коментар: ' + earned[id].reason_or_comment) : b.desc}</span>
+                    </div>`;
+                }).join('');
             });
 
+            // History & Tasks
             onSnapshot(query(collection(db, "Individual_Tasks"), where("user_id", "==", currentUid)), s => {
-                const tasks = s.docs.map(d => ({id: d.id, ...d.data()}));
-                tasks.sort((a,b) => new Date(a.deadline_at) - new Date(b.deadline_at));
-                el('st-task-list').innerHTML = tasks.map(t => `
-                    <div class="card" onclick="openTaskForm('${t.id}','${t.task_title}','${t.task_category}','${t.deadline_at}','${t.task_description}')">
-                        <div style="display:flex; justify-content:space-between; align-items:flex-start">
-                            <b>${t.task_title}</b>
-                            <span style="font-size:10px; padding:3px 8px; border-radius:5px; background:${t.is_completed ? '#e8f5e9':'#ffe0b2'}">${t.is_completed ? 'ЗДАНО':'ОЧІКУЄ'}</span>
-                        </div>
-                        <p style="font-size:12px; margin:5px 0; color:var(--gray)">${t.task_description.substring(0,60)}...</p>
-                        <small>Дедлайн: ${new Date(t.deadline_at).toLocaleDateString()}</small>
-                    </div>
-                `).join('');
+                const tasks = s.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => new Date(a.deadline_at) - new Date(b.deadline_at));
+                el('st-task-list').innerHTML = tasks.map(t => `<div class="history-item" onclick="openTaskForm('${t.id}','${t.task_title}','${t.task_category}','${t.deadline_at}')"><b>${t.task_title}</b> <small>[${t.task_category}]</small><br><small>Стан: ${t.is_completed ? '✅ Здано':'⏳ Очікує'}</small></div>`).join('');
             });
 
             onSnapshot(query(collection(db, "Self_Monitoring"), where("user_id", "==", currentUid)), s => {
-                const data = s.docs.map(d => d.data()).sort((a,b) => b.entry_date.localeCompare(a.entry_date));
-                el('st-sm-history').innerHTML = data.slice(0,5).map(v => `
-                    <div class="history-item"><b>${v.entry_date}</b> | RPE: ${v.rpe_score}<br><small>Втома: ${v.fatigue_level}, Сон: ${v.sleep_quality}</small></div>
-                `).join('');
-            });
-
-            onSnapshot(query(collection(db, "Motor_Tests"), where("user_id", "==", currentUid)), s => {
-                const data = s.docs.map(d => d.data()).sort((a,b) => b.created_at - a.created_at);
-                el('st-mt-history').innerHTML = data.slice(0,5).map(v => `
-                    <div class="history-item">🏆 <b>${v.test_type}</b>: ${v.test_value} ${v.measurement_unit}</div>
-                `).join('');
+                el('st-sm-history').innerHTML = s.docs.map(d => d.data()).sort((a,b) => b.entry_date.localeCompare(a.entry_date)).slice(0,3).map(v => `<div class="history-item">📅 ${v.entry_date} | RPE: ${v.rpe_score}</div>`).join('');
             });
         }
 
-        window.openTaskForm = (id, title, cat, dead, desc) => {
-            activeTaskId = id; activeTaskData = { cat, dead };
-            show('st-task-form'); el('active-task-title').innerText = title;
-            el('st-task-form').scrollIntoView({ behavior: 'smooth' });
-        };
+        window.openTaskForm = (id, title, cat, dead) => { activeTaskId = id; activeTaskData = { cat, dead }; show('st-task-form'); el('active-task-title').innerText = title; };
 
         el('btn-submit-task').onclick = async () => {
             const now = new Date();
-            await updateDoc(doc(db, "Individual_Tasks", activeTaskId), {
-                is_completed: true, submission_content: el('st-task-comment').value,
-                attachment_url: el('st-task-url').value, submitted_at: serverTimestamp()
-            });
-            if (activeTaskData.cat === 'IoT') await awardBadge(currentUid, 'iot_expert', 'IoT Категорія');
-            if (activeTaskData.cat === 'AI') await awardBadge(currentUid, 'ai_mind', 'AI Категорія');
-            if (activeTaskData.dead && now < new Date(activeTaskData.dead)) await awardBadge(currentUid, 'strategist', 'До дедлайну');
-            alert("Завдання здано!"); hide('st-task-form');
+            await updateDoc(doc(db, "Individual_Tasks", activeTaskId), { is_completed: true, submission_content: el('st-task-comment').value, attachment_url: el('st-task-url').value, submitted_at: serverTimestamp() });
+            await updateDoc(doc(db, "Users", currentUid), { total_xp: increment(40) });
+            
+            if (activeTaskData.cat === 'IoT') await awardBadge(currentUid, 'iot_expert', 'Авто: Категорія IoT');
+            if (activeTaskData.cat === 'AI') await awardBadge(currentUid, 'ai_mind', 'Авто: Категорія AI');
+            if (activeTaskData.dead && now < new Date(activeTaskData.dead)) await awardBadge(currentUid, 'strategist', 'Авто: Здача до дедлайну');
+            await checkTurboTrigger(); alert("Завдання здано! +40 XP"); hide('st-task-form');
         };
 
         el('save-sm-btn').onclick = async () => {
-            const date = el('sm-date').value;
-            const docId = `${currentUid}_${date}`;
+            const date = el('sm-date').value; const docId = `${currentUid}_${date}`;
             const snap = await getDoc(doc(db, "Self_Monitoring", docId));
             if (snap.exists()) return alert("Сьогодні дані вже внесено!");
             await setDoc(doc(db, "Self_Monitoring", docId), {
-                user_id: currentUid, entry_date: date, created_at: serverTimestamp(),
-                rpe_score: parseInt(el('sm-rpe').value), fatigue_level: parseInt(el('sm-fatigue').value),
-                sleep_quality: parseInt(el('sm-sleep').value), muscle_soreness: parseInt(el('sm-muscle').value),
-                health_notes: el('sm-notes').value
+                user_id: currentUid, entry_date: date, rpe_score: parseInt(el('sm-rpe').value),
+                fatigue_level: parseInt(el('sm-fatigue').value), sleep_quality: parseInt(el('sm-sleep').value),
+                muscle_soreness: parseInt(el('sm-muscle').value), health_notes: el('sm-notes').value, created_at: serverTimestamp()
             });
             await updateDoc(doc(db, "Users", currentUid), { total_xp: increment(10) });
-            await checkTurbo(); alert("Збережено!");
+            await checkTurboTrigger(); alert("Збережено!");
         };
 
         el('save-mt-btn').onclick = async () => {
-            const type = el('mt-type').value;
-            const q = query(collection(db, "Motor_Tests"), where("user_id", "==", currentUid), where("test_type", "==", type));
-            const snap = await getDocs(q);
-            if (snap.size >= 3) return alert("Ліміт 3 спроб вичерпано!");
+            const type = el('mt-type').value; const q = query(collection(db, "Motor_Tests"), where("user_id", "==", currentUid), where("test_type", "==", type));
+            const snap = await getDocs(q); if (snap.size >= 3) return alert("Ліміт спроб вичерпано!");
             const docId = `${currentUid}_${type.replace(/\s/g,'')}_${snap.size + 1}`;
             await setDoc(doc(db, "Motor_Tests", docId), {
                 user_id: currentUid, test_type: type, day_id: new Date().toISOString().split('T')[0],
-                test_value: parseFloat(el('mt-val').value), measurement_unit: el('mt-unit').value,
-                created_at: serverTimestamp()
+                test_value: parseFloat(el('mt-val').value), measurement_unit: el('mt-unit').value, created_at: serverTimestamp()
             });
             await updateDoc(doc(db, "Users", currentUid), { total_xp: increment(10) });
-            await checkTurbo(); alert("Зафіксовано!");
+            await checkTurboTrigger(); alert("Зафіксовано!");
         };
 
+        // --- TEACHER ---
         async function initTeacher() {
-            hide('auth-screen'); show('teacher-dashboard');
-            el('th-name').innerText = userData.full_name;
+            hide('auth-screen'); show('teacher-dashboard'); el('th-name').innerText = userData.full_name;
             const uSnap = await getDocs(query(collection(db, "Users"), where("role", "==", "student")));
-            const students = uSnap.docs.map(d => ({id: d.id, ...d.data()}));
+            const students = uSnap.docs.map(d => d.data());
             const groups = [...new Set(students.map(s => s.group_id))];
-            el('th-group-filter').innerHTML = '<option value="">Група...</option>' + groups.map(g => `<option value="${g}">${g}</option>`).join('');
+            el('th-group-filter').innerHTML = groups.map(g => `<option value="${g}">${g}</option>`).join('');
             
-            el('th-group-filter').onchange = (e) => {
-                const filtered = students.filter(s => s.group_id === e.target.value);
-                el('th-student-list').innerHTML = filtered.map(s => `
-                    <div class="card" onclick="viewStudentData('${s.id}','${s.full_name}')" style="display:flex; justify-content:space-between">
-                        <b>${s.full_name}</b> <span>${s.total_xp} XP</span>
-                    </div>
-                `).join('');
+            el('th-group-filter').onchange = () => {
+                const filtered = students.filter(s => s.group_id === el('th-group-filter').value);
+                el('th-student-list').innerHTML = filtered.map(s => `<div class="card" onclick="viewSt('${s.user_id}','${s.full_name}')" style="display:flex; justify-content:space-between"><b>${s.full_name}</b> <span>${s.total_xp} XP</span></div>`).join('');
             };
+            el('th-group-filter').dispatchEvent(new Event('change'));
         }
 
-        window.viewStudentData = async (id, name) => {
+        window.viewSt = async (id, name) => {
             selStudentId = id; show('th-details'); el('th-sel-name').innerText = name;
-            const [sm, mt, ts] = await Promise.all([
+            const [sm, mt, it] = await Promise.all([
                 getDocs(query(collection(db, "Self_Monitoring"), where("user_id", "==", id))),
                 getDocs(query(collection(db, "Motor_Tests"), where("user_id", "==", id))),
                 getDocs(query(collection(db, "Individual_Tasks"), where("user_id", "==", id), where("is_completed", "==", true)))
             ]);
-            el('th-view-sm').innerHTML = sm.docs.map(d => d.data()).sort((a,b) => b.entry_date.localeCompare(a.entry_date)).map(d => `<div class="history-item"><b>${d.entry_date}</b>: RPE ${d.rpe_score}<br><small>Втома: ${d.fatigue_level}, Сон: ${d.sleep_quality}</small></div>`).join('');
-            el('th-view-mt').innerHTML = mt.docs.map(d => d.data()).map(d => `<div class="history-item">🏆 ${d.test_type}: ${d.test_value}</div>`).join('');
-            el('th-view-tasks').innerHTML = ts.docs.map(d => ({id: d.id, ...d.data()})).map(d => `<div class="history-item"><b>${d.task_title}</b><br><a href="${d.attachment_url}" target="_blank">Посилання</a><br><input type="number" id="grade-${d.id}" placeholder="Бал" style="width:80px; margin-top:5px"> <button onclick="gradeTask('${d.id}')" style="padding:5px">ОК</button></div>`).join('');
-            el('th-details').scrollIntoView({ behavior: 'smooth' });
+            el('th-view-sm').innerHTML = '<h4>Самоконтроль</h4>' + sm.docs.map(d => d.data()).sort((a,b) => b.entry_date.localeCompare(a.entry_date)).map(v => `<div class="history-item"><b>${v.entry_date}</b> | RPE: ${v.rpe_score}<br><small>Втома: ${v.fatigue_level}, Сон: ${v.sleep_quality}, Біль: ${v.muscle_soreness}</small><br><i>Notes: ${v.health_notes || ''}</i></div>`).join('');
+            el('th-view-mt').innerHTML = '<h4>Тести</h4>' + mt.docs.map(d => d.data()).map(v => `<div class="history-item">${v.test_type}: ${v.test_value} ${v.measurement_unit}</div>`).join('');
+            el('th-view-tasks').innerHTML = '<h4>Здані роботи</h4>' + it.docs.map(d => d.data()).map(v => `<div class="history-item"><b>${v.task_title}</b><br><p>${v.submission_content}</p><a href="${v.attachment_url}" target="_blank">Переглянути файл</a></div>`).join('');
         };
 
-        window.gradeTask = async (id) => {
-            const g = parseInt(el('grade-'+id).value); if (!g) return;
-            await updateDoc(doc(db, "Individual_Tasks", id), { task_grade: g });
-            await addDoc(collection(db, "Grades"), { user_id: selStudentId, teacher_id: currentUid, grade_value: g, graded_at: serverTimestamp() });
-            alert("Оцінено!");
+        el('th-btn-award').onclick = async () => {
+            if (!selStudentId) return;
+            await awardBadge(selStudentId, el('th-badge-sel').value, el('th-badge-reason').value, currentUid);
+            alert("Нагороджено!");
         };
-
-        el('th-btn-award').onclick = () => { if(selStudentId) awardBadge(selStudentId, el('th-badge-sel').value, el('th-badge-reason').value, currentUid); alert("Нагороджено!"); };
 
         el('th-btn-publish').onclick = async () => {
-            const group = el('th-group-filter').value; if(!group) return alert("Оберіть групу!");
+            const group = el('th-group-filter').value;
             const sSnap = await getDocs(query(collection(db, "Users"), where("group_id", "==", group), where("role", "==", "student")));
             sSnap.forEach(async (sDoc) => {
                 await addDoc(collection(db, "Individual_Tasks"), {
@@ -750,14 +500,34 @@
                     is_completed: false, submission_content: "", attachment_url: "", created_at: serverTimestamp()
                 });
             });
-            alert("Завдання призначено!");
+            alert("Призначено!");
         };
 
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration skipped:', err));
+        // --- CSV EXPORT WITH QUARTILES ---
+        el('btn-export-csv').onclick = async () => {
+            const group = el('th-group-filter').value;
+            const snap = await getDocs(query(collection(db, "Users"), where("group_id", "==", group), where("role", "==", "student")));
+            const students = snap.docs.map(d => d.data()).sort((a,b) => (b.total_xp || 0) - (a.total_xp || 0));
+            const N = students.length;
+            
+            let csv = "\uFEFFРанг;ПІБ;Спеціалізація;Розряд;Група;Бали_XP;Квартиль\n";
+            students.forEach((s, i) => {
+                const rank = i + 1;
+                const p = i / N;
+                let q = "Q1";
+                if (p < 0.25) q = "Q4"; else if (p < 0.50) q = "Q3"; else if (p < 0.75) q = "Q2";
+                csv += `${rank};${s.full_name};${s.sport_specialization};${s.sport_rank};${s.group_id};${s.total_xp};${q}\n`;
             });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `Rating_${group}_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        };
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Error:', err)); });
         }
     </script>
 </body>
